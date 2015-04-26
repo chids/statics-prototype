@@ -2,6 +2,8 @@ package plan3.statics.model;
 
 import static javax.ws.rs.core.MediaType.TEXT_PLAIN_TYPE;
 
+import plan3.pure.jersey.exceptions.PreconditionFailedException;
+
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Objects;
@@ -26,13 +28,17 @@ public class Content {
     }
 
     public Content(final Static path, final MediaType mime, final byte[] content) {
-        this.path = path.withRevision(hash(content));
+        final HashCode revision = hash(content);
+        if(!path.revision().equals(revision)) {
+            throw new PreconditionFailedException("Revision mismatch: " + path.revision() + " != " + revision);
+        }
+        this.path = path.withRevision(revision);
         this.mime = mime;
         this.content = content;
     }
 
     public Content update(final String content) {
-        return new Content(this.path, content);
+        return new Content(this.path.withRevision(Content.hash(content)), content);
     }
 
     @Override
