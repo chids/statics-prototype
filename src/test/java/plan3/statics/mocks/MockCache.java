@@ -2,15 +2,14 @@ package plan3.statics.mocks;
 
 import plan3.statics.model.Cache;
 import plan3.statics.model.Content;
+import plan3.statics.model.Revision;
 import plan3.statics.model.Static;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import com.google.common.hash.HashCode;
-
 public class MockCache implements Cache {
-    private final Map<String, HashCode> cache = new HashMap<>();
+    private final Map<String, Revision> cache = new HashMap<>();
 
     @Override
     public Static get(final Content content) {

@@ -47,9 +47,9 @@ public class RedisCache implements Cache {
         }
     }
 
-    private HashCode get(final Static path) {
+    private Revision get(final Static path) {
         try(Jedis nonTx = this.jedis.nonTx()) {
-            return HashCode.fromString(nonTx.get(key(path)));
+            return new Revision(HashCode.fromString(nonTx.get(key(path))));
         }
     }
 }

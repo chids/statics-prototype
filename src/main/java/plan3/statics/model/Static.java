@@ -5,23 +5,22 @@ import static java.util.Objects.requireNonNull;
 import java.util.Objects;
 
 import com.google.common.base.Joiner;
-import com.google.common.hash.HashCode;
 
 public class Static {
     private static final String CURRENT = "/current";
     private final String domain;
     private final String type;
     private final String id;
-    private final HashCode qualifier;
+    private final Revision revision;
 
-    public Static(final String domain, final String type, final String id, final HashCode revision) {
+    public Static(final String domain, final String type, final String id, final Revision revision) {
         this.domain = notEmpty(domain, "Domain");
         this.type = notEmpty(type, "Type");
         this.id = notEmpty(id, "Id");
-        this.qualifier = requireNonNull(revision, "Revision");
+        this.revision = requireNonNull(revision, "Revision");
     }
 
-    public Static withRevision(final HashCode revision) {
+    public Static withRevision(final Revision revision) {
         return new Static(this.domain, this.type, this.id, revision);
     }
 
@@ -39,7 +38,7 @@ public class Static {
     }
 
     public String toString(final String separator) {
-        return Joiner.on(separator).skipNulls().join(this.domain, this.type, this.id, this.qualifier.toString());
+        return Joiner.on(separator).skipNulls().join(this.domain, this.type, this.id, this.revision.toString());
     }
 
     String toStringWithoutRevision(final char separator) {
@@ -53,18 +52,18 @@ public class Static {
             return Objects.equals(this.domain, that.domain)
                     && Objects.equals(this.type, that.type)
                     && Objects.equals(this.id, that.id)
-                    && Objects.equals(this.qualifier, that.qualifier);
+                    && Objects.equals(this.revision, that.revision);
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.domain, this.type, this.id, this.qualifier);
+        return Objects.hash(this.domain, this.type, this.id, this.revision);
     }
 
-    public HashCode revision() {
-        return this.qualifier;
+    public Revision revision() {
+        return this.revision;
     }
 
     private static String notEmpty(final String value, final String name) {
