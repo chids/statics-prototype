@@ -15,7 +15,7 @@ import com.google.common.base.Charsets;
 
 public class Content {
     private final Static path;
-    final MediaType mime;
+    private final MediaType mime;
     private final byte[] content;
 
     public Content(final String domain, final String type, final String id, final String content) {
@@ -85,5 +85,9 @@ public class Content {
 
     public Static path() {
         return this.path;
+    }
+
+    public MediaType mime() {
+        return this.mime;
     }
 }

@@ -29,7 +29,7 @@ public class S3Storage implements Storage {
     @Override
     public void put(final Content content) {
         final ObjectMetadata metadata = new ObjectMetadata();
-        metadata.setContentType(content.mime.toString());
+        metadata.setContentType(content.mime().toString());
         metadata.setHeader(Headers.S3_CANNED_ACL, CannedAccessControlList.PublicRead);
         this.s3.putObject(this.bucket, key(content), content.content(), metadata);
         metadata.setHeader(Headers.REDIRECT_LOCATION, "/".concat(key(content)));
