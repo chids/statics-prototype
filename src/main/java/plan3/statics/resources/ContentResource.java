@@ -1,0 +1,50 @@
+package plan3.statics.resources;
+
+import static javax.ws.rs.core.HttpHeaders.ETAG;
+import plan3.statics.model.Content;
+import plan3.statics.model.Coordinator;
+import plan3.statics.model.Revision;
+import plan3.statics.model.Static;
+
+import java.net.URI;
+
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+
+@Path("{domain}/{type}/{id}")
+public class ContentResource {
+
+    private final Coordinator coordinator;
+
+    public ContentResource(final Coordinator coordinator) {
+        this.coordinator = coordinator;
+    }
+
+    @POST
+    public Response add(@Context final Content content) throws Exception {
+        final Static added = this.coordinator.add(content);
+        return Response.created(URI.create(added.toString('/')))
+                .type(content.mime())
+                .header(ETAG, content.path().revision())
+                .entity(content.content()).build();
+    }
+
+    @PUT
+    public Response update(@Context final Revision current, @Context final Content candidate) throws Exception {
+        final Static updated = this.coordinator.update(candidate.path().withRevision(current), candidate);
+        return Response.status(Status.ACCEPTED)
+                .location(URI.create(updated.toString('/')))
+                .type(candidate.mime())
+                .header(ETAG, candidate.path().revision())
+                .entity(candidate.content())
+                .build();
+    }
+
+    public void delete() {
+        // Implements as update with zero length content?
+    }
+}
