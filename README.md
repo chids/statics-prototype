@@ -9,17 +9,19 @@ and as such it is a service for read intensive rather than write intensive workl
 
 ### Differences from Pinterest's Config v2
 
-* Redis instead of Zookeeper for coordination
-* Redis instead of Zookeeper for broadcasting changes
-* Uses AWS S3 webpage redirects to expose the latest revision of each document at a "known URL"
+* Redis instead of Zookeeper
+   * (for coordination and broadcasting changes)
+* Expose the latest revision of each document at a "known URL"
+   * (using AWS S3 webpage redirects)
 * Stores any type of content
    * (binary data + mime type)
 
 ### Similarities to Pinterest's Config v2
 
 * Immutable append only storage
-  * In order to benefit from S3's "read-after-write" consistency for new files
+  * (to benefit from S3's "read-after-write" consistency for new files)
 * New versions are written under a per document write lock
+  * (managed as a key in Redis)
 
 <img src="design.svg"/>
 
