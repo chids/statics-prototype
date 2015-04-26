@@ -26,7 +26,7 @@ public class CoordinatorTest {
     @SuppressWarnings({ "unchecked" })
     public void locking() throws Exception {
         final Lock lock = mock(Lock.class);
-        final Coordinator coordinator = new Coordinator(new MockCache(), new MockStorage(), lock);
+        final Coordinator coordinator = new ObservableCoordinator(new MockCache(), new MockStorage(), lock);
         final Content version1 = new Content("domain", "type", "id", "blah");
         final Static revision1 = coordinator.add(version1);
         verify(lock).execute(eq(version1), any(Callable.class));
@@ -37,7 +37,7 @@ public class CoordinatorTest {
 
     @Test
     public void cacheAndStorageInconsistecny() throws Exception {
-        final Coordinator coordinator = coordinator();
+        final ObservableCoordinator coordinator = coordinator();
         final Content version1 = new Content("domain", "type", "id", "blah");
         final Content version2 = version1.update("bleh");
         coordinator.add(version1);
@@ -57,7 +57,7 @@ public class CoordinatorTest {
     @Test
     public void add() throws Exception {
         final Observer observer = mock(Observer.class);
-        final Coordinator coordinator = coordinator(observer);
+        final ObservableCoordinator coordinator = coordinator(observer);
         final Content version1 = new Content("domain", "type", "id", "blah");
         coordinator.add(version1);
         assertEquals(version1, version1.readFrom(coordinator.storage));
@@ -67,7 +67,7 @@ public class CoordinatorTest {
     @Test
     public void update() throws Exception {
         final Observer observer = mock(Observer.class);
-        final Coordinator coordinator = coordinator(observer);
+        final ObservableCoordinator coordinator = coordinator(observer);
         final Content version1 = new Content("domain", "type", "id", "blah");
         final Static revision1 = coordinator.add(version1);
         final Content version2 = version1.update("foo");
@@ -87,7 +87,7 @@ public class CoordinatorTest {
 
     @Test(expected = PreconditionFailedException.class)
     public void cacheDoesntMatchStorageConflict() throws Exception {
-        final Coordinator coordinator = coordinator();
+        final ObservableCoordinator coordinator = coordinator();
         final Content version1 = new Content("domain", "type", "id", "blah");
         final Static revision1 = coordinator.add(version1);
         final Content version2 = version1.update("foo");
@@ -97,7 +97,7 @@ public class CoordinatorTest {
 
     @Test
     public void cacheNewerThanStorageOverwrites() throws Exception {
-        final Coordinator coordinator = coordinator();
+        final ObservableCoordinator coordinator = coordinator();
         final Content version1 = new Content("domain", "type", "id", "blah");
         final Static revision1 = coordinator.add(version1);
         final Content version2 = version1.update("foo");
@@ -107,7 +107,7 @@ public class CoordinatorTest {
 
     @Test(expected = ConflictException.class)
     public void inStorageButEvictedFromCache() throws Exception {
-        final Coordinator coordinator = coordinator();
+        final ObservableCoordinator coordinator = coordinator();
         final Content version1 = new Content("domain", "type", "id", "blah");
         final Static revision1 = coordinator.add(version1);
         version1.removeFrom(coordinator.cache);
@@ -117,7 +117,7 @@ public class CoordinatorTest {
     @Test
     public void inCacheButRemovedFromStorageOverwrites() throws Exception {
         final Observer observer = mock(Observer.class);
-        final Coordinator coordinator = coordinator(observer);
+        final ObservableCoordinator coordinator = coordinator(observer);
         final Content version1 = new Content("domain", "type", "id", "blah");
         final Static revision1 = coordinator.add(version1);
         version1.removeFrom(coordinator.storage);
@@ -128,11 +128,11 @@ public class CoordinatorTest {
         verify(observer, times(1)).update(coordinator, version2);
     }
 
-    private static Coordinator coordinator(final Observer observer) {
-        return new Coordinator(new MockCache(), new MockStorage(), new MockLock(), observer);
+    private static ObservableCoordinator coordinator(final Observer observer) {
+        return new ObservableCoordinator(new MockCache(), new MockStorage(), new MockLock(), observer);
     }
 
-    private static Coordinator coordinator() {
-        return new Coordinator(new MockCache(), new MockStorage(), new MockLock());
+    private static ObservableCoordinator coordinator() {
+        return new ObservableCoordinator(new MockCache(), new MockStorage(), new MockLock());
     }
 }

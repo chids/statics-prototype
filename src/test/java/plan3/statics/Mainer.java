@@ -2,6 +2,7 @@ package plan3.statics;
 
 import plan3.statics.model.Coordinator;
 
+import plan3.statics.model.ObservableCoordinator;
 import plan3.statics.model.Cache;
 import plan3.statics.model.Content;
 import plan3.statics.model.Lock;
@@ -32,7 +33,7 @@ public class Mainer implements Observer {
     private static final String REDISURL = "...";
 
     public Mainer(final Storage storage, final Cache cache, final Lock lock) throws Exception {
-        final Coordinator coordinator = new Coordinator(cache, storage, lock, this);
+        final Coordinator coordinator = new ObservableCoordinator(cache, storage, lock, this);
         final Content version1 = new Content("domain", "type", "id", "content");
         final Static revision1 = coordinator.add(version1);
         final Content version2 = version1.update("second content");
