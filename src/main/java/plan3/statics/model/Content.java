@@ -6,6 +6,7 @@ import plan3.pure.jersey.exceptions.PreconditionFailedException;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.Objects;
 
 import javax.ws.rs.core.MediaType;
@@ -50,14 +51,14 @@ public class Content {
     public boolean equals(final Object o) {
         if(o instanceof Content) {
             final Content that = (Content)o;
-            return Objects.equals(this.mime, that.mime) && Objects.equals(this.content, that.content);
+            return Objects.equals(this.mime, that.mime) && Arrays.equals(this.content, that.content);
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.mime, this.content);
+        return Objects.hash(this.mime, Arrays.hashCode(this.content));
     }
 
     public boolean isKnown(final Cache cache) {
