@@ -6,7 +6,7 @@ public interface Storage extends Persistence {
 
     // This assumes S3 or in memory HashMap
     default String key(final Static path) {
-        return path.withRevision().toString('/');
+        return path.toString('/');
     }
 
     default String key(final Content content) {

@@ -46,11 +46,6 @@ public class Static {
         return Joiner.on(Character.toString(separator)).skipNulls().join(this.domain, this.type, this.id);
     }
 
-    public Static withRevision() {
-        revision();
-        return this;
-    }
-
     @Override
     public boolean equals(final Object o) {
         if(o instanceof Static) {
