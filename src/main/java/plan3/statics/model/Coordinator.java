@@ -25,17 +25,17 @@ public class Coordinator extends Observable {
         Stream.of(observers).forEach(this::addObserver);
     }
 
-    public Path update(final Path previous, final Content candidate) throws Exception {
+    public Static update(final Static previous, final Content candidate) throws Exception {
         return this.lock.execute(candidate, () -> conditionalWrite(previous, candidate));
     }
 
-    public Path add(final Content candidate) throws Exception {
+    public Static add(final Content candidate) throws Exception {
         return this.lock.execute(candidate, () -> unconditionalAdd(candidate));
     }
 
-    private Path conditionalWrite(final Path previous, final Content candidate) {
+    private Static conditionalWrite(final Static previous, final Content candidate) {
         if(candidate.isKnown(this.cache)) {
-            final Path cached = this.cache.get(candidate);
+            final Static cached = this.cache.get(candidate);
             if(candidate.exists(this.cache)) {
                 LOG.warn("{} NOT written, content already in cache", candidate.path());
                 return candidate.path();
@@ -52,7 +52,7 @@ public class Coordinator extends Observable {
         throw new ConflictException("Cache out of sync: " + candidate);
     }
 
-    private Path unconditionalAdd(final Content candidate) {
+    private Static unconditionalAdd(final Content candidate) {
         if(candidate.isKnown(this.cache)) {
             final boolean persisted = candidate.exists(this.storage);
             final boolean cached = candidate.exists(this.cache);
@@ -91,7 +91,7 @@ public class Coordinator extends Observable {
         return write(candidate);
     }
 
-    private Path write(final Content content) {
+    private Static write(final Content content) {
         content.writeTo(this.storage);
         content.writeTo(this.cache);
         super.setChanged();

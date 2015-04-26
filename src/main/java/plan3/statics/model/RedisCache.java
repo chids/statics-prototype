@@ -15,39 +15,39 @@ public class RedisCache implements Cache {
     }
 
     @Override
-    public Path get(final Content content) {
-        final Path path = content.path();
+    public Static get(final Content content) {
+        final Static path = content.path();
         return path.withRevision(get(path));
     }
 
     @Override
-    public boolean hasId(final Path path) {
+    public boolean hasId(final Static path) {
         try(Jedis nonTx = this.jedis.nonTx()) {
             return nonTx.exists(key(path));
         }
     }
 
     @Override
-    public boolean exists(final Path path) {
+    public boolean exists(final Static path) {
         return path.revision().equals(get(path));
     }
 
     @Override
     public void put(final Content content) {
-        final Path path = content.path();
+        final Static path = content.path();
         try(Jedis nonTx = this.jedis.nonTx()) {
             nonTx.set(key(path), path.revision().toString());
         }
     }
 
     @Override
-    public void remove(final Path path) {
+    public void remove(final Static path) {
         try(Jedis nonTx = this.jedis.nonTx()) {
             nonTx.del(key(path));
         }
     }
 
-    private HashCode get(final Path path) {
+    private HashCode get(final Static path) {
         try(Jedis nonTx = this.jedis.nonTx()) {
             return HashCode.fromString(nonTx.get(key(path)));
         }

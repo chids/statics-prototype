@@ -21,9 +21,9 @@ public abstract class Lock {
         this.timeout = requireNonNull(timeout, "Timeout");
     }
 
-    public Path execute(final Content content, final Callable<Path> task) throws Exception {
+    public Static execute(final Content content, final Callable<Static> task) throws Exception {
         try(Token token = acquire(content)) {
-            final Future<Path> future = executor.submit(task);
+            final Future<Static> future = executor.submit(task);
             try {
                 return future.get(this.timeout.to(TimeUnit.MILLISECONDS), TimeUnit.MILLISECONDS);
             }

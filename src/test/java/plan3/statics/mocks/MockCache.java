@@ -2,7 +2,7 @@ package plan3.statics.mocks;
 
 import plan3.statics.model.Cache;
 import plan3.statics.model.Content;
-import plan3.statics.model.Path;
+import plan3.statics.model.Static;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,29 +13,29 @@ public class MockCache implements Cache {
     private final Map<String, HashCode> cache = new HashMap<>();
 
     @Override
-    public Path get(final Content content) {
-        final Path path = content.path();
+    public Static get(final Content content) {
+        final Static path = content.path();
         return path.withRevision(this.cache.get(key(path)));
     }
 
     @Override
-    public boolean hasId(final Path path) {
+    public boolean hasId(final Static path) {
         return this.cache.containsKey(key(path));
     }
 
     @Override
-    public boolean exists(final Path path) {
+    public boolean exists(final Static path) {
         return path.revision().equals(this.cache.get(key(path)));
     }
 
     @Override
     public void put(final Content content) {
-        final Path path = content.path();
+        final Static path = content.path();
         this.cache.put(key(path), path.revision());
     }
 
     @Override
-    public void remove(final Path path) {
+    public void remove(final Static path) {
         this.cache.remove(key(path));
     }
 }

@@ -37,7 +37,7 @@ public class S3Storage implements Storage {
     }
 
     @Override
-    public boolean exists(final Path path) {
+    public boolean exists(final Static path) {
         try {
             final String revision = this.s3.getObjectMetadata(this.bucket, key(path)).getETag();
             return path.toString('/').endsWith(revision);
@@ -51,7 +51,7 @@ public class S3Storage implements Storage {
     }
 
     @Override
-    public Content get(final Path path) {
+    public Content get(final Static path) {
         final S3Object result = this.s3.getObject(this.bucket, key(path));
         try(InputStream content = result.getObjectContent()) {
             final MediaType mime = MediaType.valueOf(result.getObjectMetadata().getContentType());
@@ -63,7 +63,7 @@ public class S3Storage implements Storage {
     }
 
     @Override
-    public void remove(final Path path) {
+    public void remove(final Static path) {
         this.s3.deleteObject(this.bucket, key(path));
     }
 }

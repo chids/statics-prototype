@@ -5,7 +5,7 @@ import plan3.statics.model.Coordinator;
 import plan3.statics.model.Cache;
 import plan3.statics.model.Content;
 import plan3.statics.model.Lock;
-import plan3.statics.model.Path;
+import plan3.statics.model.Static;
 import plan3.statics.model.RedisCache;
 import plan3.statics.model.RedisLock;
 import plan3.statics.model.S3Storage;
@@ -34,7 +34,7 @@ public class Mainer implements Observer {
     public Mainer(final Storage storage, final Cache cache, final Lock lock) throws Exception {
         final Coordinator coordinator = new Coordinator(cache, storage, lock, this);
         final Content version1 = new Content("domain", "type", "id", "content");
-        final Path revision1 = coordinator.add(version1);
+        final Static revision1 = coordinator.add(version1);
         final Content version2 = version1.update("second content");
         System.err.println(coordinator.update(revision1, version2));
     }

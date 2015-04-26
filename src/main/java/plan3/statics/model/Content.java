@@ -13,19 +13,19 @@ import com.google.common.hash.HashCode;
 import com.google.common.hash.Hashing;
 
 public class Content {
-    private final Path path;
+    private final Static path;
     final MediaType mime;
     private final byte[] content;
 
     public Content(final String domain, final String type, final String id, final String content) {
-        this(new Path(domain, type, id, hash(content)), content);
+        this(new Static(domain, type, id, hash(content)), content);
     }
 
-    public Content(final Path path, final String content) {
+    public Content(final Static path, final String content) {
         this(path, TEXT_PLAIN_TYPE, content.getBytes(Charsets.UTF_8));
     }
 
-    public Content(final Path path, final MediaType mime, final byte[] content) {
+    public Content(final Static path, final MediaType mime, final byte[] content) {
         this.path = path.withRevision(hash(content));
         this.mime = mime;
         this.content = content;
@@ -86,7 +86,7 @@ public class Content {
         return new ByteArrayInputStream(this.content);
     }
 
-    public Path path() {
+    public Static path() {
         return this.path;
     }
 }

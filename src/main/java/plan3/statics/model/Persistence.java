@@ -4,7 +4,7 @@ public interface Persistence {
 
     void put(final Content content);
 
-    public boolean exists(final Path path);
+    public boolean exists(final Static path);
 
-    public void remove(final Path path);
+    public void remove(final Static path);
 }

@@ -7,22 +7,22 @@ import java.util.Objects;
 import com.google.common.base.Joiner;
 import com.google.common.hash.HashCode;
 
-public class Path {
+public class Static {
     private static final String CURRENT = "/current";
     private final String domain;
     private final String type;
     private final String id;
     private final HashCode qualifier;
 
-    public Path(final String domain, final String type, final String id, final HashCode revision) {
+    public Static(final String domain, final String type, final String id, final HashCode revision) {
         this.domain = notEmpty(domain, "Domain");
         this.type = notEmpty(type, "Type");
         this.id = notEmpty(id, "Id");
         this.qualifier = requireNonNull(revision, "Revision");
     }
 
-    public Path withRevision(final HashCode revision) {
-        return new Path(this.domain, this.type, this.id, revision);
+    public Static withRevision(final HashCode revision) {
+        return new Static(this.domain, this.type, this.id, revision);
     }
 
     public String current() {
@@ -46,15 +46,15 @@ public class Path {
         return Joiner.on(Character.toString(separator)).skipNulls().join(this.domain, this.type, this.id);
     }
 
-    public Path withRevision() {
+    public Static withRevision() {
         revision();
         return this;
     }
 
     @Override
     public boolean equals(final Object o) {
-        if(o instanceof Path) {
-            final Path that = (Path)o;
+        if(o instanceof Static) {
+            final Static that = (Static)o;
             return Objects.equals(this.domain, that.domain)
                     && Objects.equals(this.type, that.type)
                     && Objects.equals(this.id, that.id)

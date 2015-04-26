@@ -1,7 +1,7 @@
 package plan3.statics.mocks;
 
 import plan3.statics.model.Content;
-import plan3.statics.model.Path;
+import plan3.statics.model.Static;
 import plan3.statics.model.Storage;
 
 import java.util.HashMap;
@@ -16,17 +16,17 @@ public class MockStorage implements Storage {
     }
 
     @Override
-    public boolean exists(final Path path) {
+    public boolean exists(final Static path) {
         return this.storage.containsKey(key(path));
     }
 
     @Override
-    public Content get(final Path path) {
+    public Content get(final Static path) {
         return this.storage.get(key(path));
     }
 
     @Override
-    public void remove(final Path path) {
+    public void remove(final Static path) {
         this.storage.remove(key(path));
     }
 }
