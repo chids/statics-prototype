@@ -37,3 +37,15 @@ and as such it is a service for read intensive rather than write intensive workl
    * `[domain]:[type]:[id]=[revision]`
    * `lock:[domain]:[type]:[id]`
       * (written with expiration)
+
+#### S3 configuration
+
+The S3 bucket should be configured with
+* Static website hosting
+   * This is required to have the `current` revision redirect to the latest actual revision
+* Versioning
+   * This adds an additional saftey net by enabling you to revert to previous versions of objects
+   * Versioning also allows you to iterate through the revisions of an object by stepping through the metadata of the `current` revision
+   * Versioning is a pre-requeisite for bucket-to-bucket replication but need not be enabled from the start if you do not intend to use replication from the start. However adding replication later will [not replicate existing objects](https://docs.aws.amazon.com/AmazonS3/latest/dev/crr-what-is-isnot-replicated.html).
+   * Optional: add a lifecycle configuration that expires old versions
+      * The number of days that old versions are retained defines implicilty defines how much history of revisions you can retrieve by looking at the metadara for old versions of the `current` revision.
