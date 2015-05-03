@@ -34,7 +34,7 @@ public class LockTest {
     }
 
     @Test
-    public void sequential() {
+    public void conflicting() {
         final Lock lock = new MockLock();
         final Content version1 = new Content("domain", "type", "id", "version 1");
         try(Token v1 = lock.acquire(version1)) {
