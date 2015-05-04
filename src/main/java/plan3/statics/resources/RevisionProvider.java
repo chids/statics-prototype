@@ -17,13 +17,13 @@ public class RevisionProvider extends AbstractInjectableProvider<Revision> {
 
     @Override
     public Revision getValue(final HttpContext c) {
-        return revision(IF_MATCH, c.getRequest());
+        return from(c.getRequest());
     }
 
-    public static Revision revision(final String header, final HttpRequestContext request) {
-        final String etag = request.getHeaderValue(header);
+    public static Revision from(final HttpRequestContext request) {
+        final String etag = request.getHeaderValue(IF_MATCH);
         if(etag == null) {
-            throw new BadRequestException("Must specify " + header);
+            throw new BadRequestException("Must specify " + IF_MATCH);
         }
         return new Revision(HashCode.fromString(etag));
     }
