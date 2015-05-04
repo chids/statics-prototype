@@ -59,26 +59,6 @@ public class Content {
         return Objects.hash(this.mime, Arrays.hashCode(this.content));
     }
 
-    public boolean isKnown(final Cache cache) {
-        return cache.hasId(this.path);
-    }
-
-    public boolean exists(final Persistence persistence) {
-        return persistence.exists(this.path);
-    }
-
-    public void writeTo(final Persistence persistence) {
-        persistence.put(this);
-    }
-
-    public void removeFrom(final Persistence persistence) {
-        persistence.remove(this.path);
-    }
-
-    public Content readFrom(final Storage storage) {
-        return storage.get(this.path);
-    }
-
     public InputStream content() {
         return new ByteArrayInputStream(this.content);
     }

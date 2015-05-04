@@ -21,21 +21,21 @@ public class AddCommand extends Command {
 
     @Override
     public Static call() throws Exception {
-        if(this.candidate.isKnown(this.cache)) {
-            final boolean persisted = this.candidate.exists(this.storage);
-            final boolean cached = this.candidate.exists(this.cache);
+        if(this.cache.hasId(this.candidate.path())) {
+            final boolean persisted = this.storage.exists(this.candidate.path());
+            final boolean cached = this.cache.exists(this.candidate.path());
             if(persisted && cached) {
                 this.LOG.warn("{} NOT written, content exists in storage and cache", this.candidate.path());
                 throw new NotModifiedException(this.candidate.path());
             }
             if(cached) {
                 // Case: Removed directly from S3
-                this.candidate.removeFrom(this.cache);
+                this.cache.remove(this.candidate.path());
                 this.LOG.warn("{} EVICTED, content exists in cache but NOT in storage", this.candidate.path());
             }
             if(persisted) {
                 // => Update cache from storage and reject
-                this.candidate.writeTo(this.cache);
+                this.cache.put(this.candidate);
                 this.LOG.warn("{} REFRESHED, exists in storage but cache has OTHER revision",
                         this.candidate.path());
             }
@@ -44,11 +44,11 @@ public class AddCommand extends Command {
             }
             throw new ConflictException("Cache out of sync: " + this.candidate);
         }
-        if(this.candidate.exists(this.storage)) {
+        if(this.storage.exists(this.candidate.path())) {
             // Already exists in storage but not in cache
             // => Update cache from storage and reject
             // (case: Evicted from cache)
-            this.candidate.writeTo(this.cache);
+            this.cache.put(this.candidate);
             this.LOG.warn("{} REFRESHED, exists in storage, NOT in cache", this.candidate.path());
             throw new ConflictException("Cache out of sync: " + this.candidate);
         }

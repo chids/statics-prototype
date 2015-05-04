@@ -23,8 +23,8 @@ public abstract class Command implements Callable<Static> {
     }
 
     protected Static write(final Content content) {
-        content.writeTo(this.storage);
-        content.writeTo(this.cache);
+        this.storage.put(content);
+        this.cache.put(content);
         return content.path();
     }
 }

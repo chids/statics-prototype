@@ -10,12 +10,11 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import plan3.statics.model.commands.AddCommand;
-
 import plan3.pure.jersey.exceptions.PreconditionFailedException;
 import plan3.statics.mocks.MockCache;
 import plan3.statics.mocks.MockLock;
 import plan3.statics.mocks.MockStorage;
+import plan3.statics.model.commands.AddCommand;
 
 import java.util.Observer;
 import java.util.concurrent.Callable;
@@ -46,7 +45,7 @@ public class CoordinatorTest {
         final Content version1 = new Content("domain", "type", "id", "blah");
         final Content version2 = version1.update("bleh");
         coordinator.add(version1);
-        version2.writeTo(coordinator.cache); // Write version 2 only to cache
+        coordinator.cache.put(version2); // Write version 2 only to cache
         try {
             coordinator.add(version2.update("bloh")); // Attempt to write version 3
             fail("Expected conflict");
@@ -65,7 +64,7 @@ public class CoordinatorTest {
         final ObservableCoordinator coordinator = coordinator(observer);
         final Content version1 = new Content("domain", "type", "id", "blah");
         coordinator.add(version1);
-        assertEquals(version1, version1.readFrom(coordinator.storage));
+        assertEquals(version1, coordinator.storage.get(version1.path()));
         verify(observer).update(coordinator, version1.path());
     }
 
@@ -77,7 +76,7 @@ public class CoordinatorTest {
         final Static revision1 = coordinator.add(version1);
         final Content version2 = version1.update("foo");
         coordinator.update(revision1, version2);
-        assertEquals(version2.readFrom(coordinator.storage), version2);
+        assertEquals(coordinator.storage.get(version2.path()), version2);
         verify(observer, times(1)).update(coordinator, version1.path());
         verify(observer, times(1)).update(coordinator, version2.path());
     }
@@ -96,7 +95,7 @@ public class CoordinatorTest {
         final Content version1 = new Content("domain", "type", "id", "blah");
         final Static revision1 = coordinator.add(version1);
         final Content version2 = version1.update("foo");
-        version2.writeTo(coordinator.cache); // Write version 2 to cache only
+        coordinator.cache.put(version2); // Write version 2 to cache only
         coordinator.update(revision1, version1.update("version 3"));
     }
 
@@ -106,7 +105,7 @@ public class CoordinatorTest {
         final Content version1 = new Content("domain", "type", "id", "blah");
         final Static revision1 = coordinator.add(version1);
         final Content version2 = version1.update("foo");
-        version2.writeTo(coordinator.storage);
+        coordinator.storage.put(version2); // Write version 2 to storage only
         coordinator.update(revision1, version1.update("version 3"));
     }
 
@@ -115,7 +114,7 @@ public class CoordinatorTest {
         final ObservableCoordinator coordinator = coordinator();
         final Content version1 = new Content("domain", "type", "id", "blah");
         final Static revision1 = coordinator.add(version1);
-        version1.removeFrom(coordinator.cache);
+        coordinator.cache.remove(version1.path()); // Remove from cache only
         coordinator.update(revision1, version1.update("version 2"));
     }
 
@@ -125,10 +124,10 @@ public class CoordinatorTest {
         final ObservableCoordinator coordinator = coordinator(observer);
         final Content version1 = new Content("domain", "type", "id", "blah");
         final Static revision1 = coordinator.add(version1);
-        version1.removeFrom(coordinator.storage);
+        coordinator.storage.remove(version1.path()); // Remove from storage only
         final Content version2 = version1.update("version 2");
         coordinator.update(revision1, version2);
-        assertEquals(version2.readFrom(coordinator.storage), version2);
+        assertEquals(coordinator.storage.get(version2.path()), version2);
         verify(observer, times(1)).update(coordinator, version1.path());
         verify(observer, times(1)).update(coordinator, version2.path());
     }
