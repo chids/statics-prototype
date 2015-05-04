@@ -4,9 +4,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import plan3.statics.model.commands.AddCommand;
 
 import plan3.pure.jersey.exceptions.PreconditionFailedException;
 import plan3.statics.mocks.MockCache;
@@ -26,8 +30,9 @@ public class CoordinatorTest {
     @SuppressWarnings({ "unchecked" })
     public void locking() throws Exception {
         final Lock lock = mock(Lock.class);
-        final Coordinator coordinator = new ObservableCoordinator(new MockCache(), new MockStorage(), lock);
         final Content version1 = new Content("domain", "type", "id", "blah");
+        when(lock.execute(eq(version1.path()), isA(AddCommand.class))).thenReturn(version1.path());
+        final Coordinator coordinator = new ObservableCoordinator(new MockCache(), new MockStorage(), lock);
         final Static revision1 = coordinator.add(version1);
         verify(lock).execute(eq(version1.path()), any(Callable.class));
         final Content version2 = version1.update("mooo");
@@ -61,7 +66,7 @@ public class CoordinatorTest {
         final Content version1 = new Content("domain", "type", "id", "blah");
         coordinator.add(version1);
         assertEquals(version1, version1.readFrom(coordinator.storage));
-        verify(observer).update(coordinator, version1);
+        verify(observer).update(coordinator, version1.path());
     }
 
     @Test
@@ -73,8 +78,8 @@ public class CoordinatorTest {
         final Content version2 = version1.update("foo");
         coordinator.update(revision1, version2);
         assertEquals(version2.readFrom(coordinator.storage), version2);
-        verify(observer, times(1)).update(coordinator, version1);
-        verify(observer, times(1)).update(coordinator, version2);
+        verify(observer, times(1)).update(coordinator, version1.path());
+        verify(observer, times(1)).update(coordinator, version2.path());
     }
 
     @Test(expected = ConflictException.class)
@@ -124,8 +129,8 @@ public class CoordinatorTest {
         final Content version2 = version1.update("version 2");
         coordinator.update(revision1, version2);
         assertEquals(version2.readFrom(coordinator.storage), version2);
-        verify(observer, times(1)).update(coordinator, version1);
-        verify(observer, times(1)).update(coordinator, version2);
+        verify(observer, times(1)).update(coordinator, version1.path());
+        verify(observer, times(1)).update(coordinator, version2.path());
     }
 
     private static ObservableCoordinator coordinator(final Observer observer) {
