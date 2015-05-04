@@ -32,7 +32,7 @@ public class CoordinatorTest {
         final Content version1 = new Content("domain", "type", "id", "blah");
         when(lock.execute(eq(version1.path()), isA(AddCommand.class))).thenReturn(version1.path());
         final Coordinator coordinator = new ObservableCoordinator(new MockCache(), new MockStorage(), lock);
-        final Static revision1 = coordinator.add(version1);
+        final Location revision1 = coordinator.add(version1);
         verify(lock).execute(eq(version1.path()), any(Callable.class));
         final Content version2 = version1.update("mooo");
         coordinator.update(revision1, version2);
@@ -73,7 +73,7 @@ public class CoordinatorTest {
         final Observer observer = mock(Observer.class);
         final ObservableCoordinator coordinator = coordinator(observer);
         final Content version1 = new Content("domain", "type", "id", "blah");
-        final Static revision1 = coordinator.add(version1);
+        final Location revision1 = coordinator.add(version1);
         final Content version2 = version1.update("foo");
         coordinator.update(revision1, version2);
         assertEquals(coordinator.storage.get(version2.path()), version2);
@@ -93,7 +93,7 @@ public class CoordinatorTest {
     public void cacheDoesntMatchStorageConflict() throws Exception {
         final ObservableCoordinator coordinator = coordinator();
         final Content version1 = new Content("domain", "type", "id", "blah");
-        final Static revision1 = coordinator.add(version1);
+        final Location revision1 = coordinator.add(version1);
         final Content version2 = version1.update("foo");
         coordinator.cache.put(version2); // Write version 2 to cache only
         coordinator.update(revision1, version1.update("version 3"));
@@ -103,7 +103,7 @@ public class CoordinatorTest {
     public void cacheNewerThanStorageOverwrites() throws Exception {
         final ObservableCoordinator coordinator = coordinator();
         final Content version1 = new Content("domain", "type", "id", "blah");
-        final Static revision1 = coordinator.add(version1);
+        final Location revision1 = coordinator.add(version1);
         final Content version2 = version1.update("foo");
         coordinator.storage.put(version2); // Write version 2 to storage only
         coordinator.update(revision1, version1.update("version 3"));
@@ -113,7 +113,7 @@ public class CoordinatorTest {
     public void inStorageButEvictedFromCache() throws Exception {
         final ObservableCoordinator coordinator = coordinator();
         final Content version1 = new Content("domain", "type", "id", "blah");
-        final Static revision1 = coordinator.add(version1);
+        final Location revision1 = coordinator.add(version1);
         coordinator.cache.remove(version1.path()); // Remove from cache only
         coordinator.update(revision1, version1.update("version 2"));
     }
@@ -123,7 +123,7 @@ public class CoordinatorTest {
         final Observer observer = mock(Observer.class);
         final ObservableCoordinator coordinator = coordinator(observer);
         final Content version1 = new Content("domain", "type", "id", "blah");
-        final Static revision1 = coordinator.add(version1);
+        final Location revision1 = coordinator.add(version1);
         coordinator.storage.remove(version1.path()); // Remove from storage only
         final Content version2 = version1.update("version 2");
         coordinator.update(revision1, version2);

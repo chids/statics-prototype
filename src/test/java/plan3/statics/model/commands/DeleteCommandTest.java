@@ -10,7 +10,7 @@ import static org.mockito.Mockito.when;
 import plan3.pure.jersey.exceptions.PreconditionFailedException;
 import plan3.statics.model.Cache;
 import plan3.statics.model.Revision;
-import plan3.statics.model.Static;
+import plan3.statics.model.Location;
 import plan3.statics.model.Storage;
 
 import org.junit.Test;
@@ -28,7 +28,7 @@ public class DeleteCommandTest {
 
     @Test
     public void wrongRevisionInCache() throws Exception {
-        final Static path = new Static("domain", "type", "id", new Revision("foo"));
+        final Location path = new Location("domain", "type", "id", new Revision("foo"));
         when(this.cache.hasId(path)).thenReturn(true);
         when(this.cache.exists(path)).thenReturn(false);
         try {
@@ -42,7 +42,7 @@ public class DeleteCommandTest {
 
     @Test
     public void exceptionInStorage() throws Exception {
-        final Static path = new Static("domain", "type", "id", new Revision("foo"));
+        final Location path = new Location("domain", "type", "id", new Revision("foo"));
         when(this.cache.hasId(path)).thenReturn(true);
         when(this.cache.exists(path)).thenReturn(true);
         when(this.storage.exists(path)).thenReturn(true);
@@ -57,7 +57,7 @@ public class DeleteCommandTest {
 
     @Test
     public void exceptionInCache() throws Exception {
-        final Static path = new Static("domain", "type", "id", new Revision("foo"));
+        final Location path = new Location("domain", "type", "id", new Revision("foo"));
         when(this.cache.hasId(path)).thenReturn(true);
         when(this.cache.exists(path)).thenReturn(true);
         doThrow(new IllegalStateException()).when(this.cache).remove(path);
@@ -73,7 +73,7 @@ public class DeleteCommandTest {
 
     @Test
     public void success() throws Exception {
-        final Static path = new Static("domain", "type", "id", new Revision("foo"));
+        final Location path = new Location("domain", "type", "id", new Revision("foo"));
         when(this.cache.hasId(path)).thenReturn(true);
         when(this.cache.exists(path)).thenReturn(true);
         when(this.storage.exists(path)).thenReturn(true);
@@ -84,7 +84,7 @@ public class DeleteCommandTest {
 
     @Test
     public void notInCache() throws Exception {
-        final Static path = new Static("domain", "type", "id", new Revision("foo"));
+        final Location path = new Location("domain", "type", "id", new Revision("foo"));
         when(this.cache.hasId(path)).thenReturn(false);
         new DeleteCommand(this.cache, this.storage, path).call();
         verify(this.cache).hasId(path);
@@ -93,7 +93,7 @@ public class DeleteCommandTest {
 
     @Test
     public void notInStorage() throws Exception {
-        final Static path = new Static("domain", "type", "id", new Revision("foo"));
+        final Location path = new Location("domain", "type", "id", new Revision("foo"));
         when(this.cache.hasId(path)).thenReturn(true);
         when(this.cache.exists(path)).thenReturn(true);
         when(this.storage.exists(path)).thenReturn(false);

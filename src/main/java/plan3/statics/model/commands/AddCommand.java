@@ -5,7 +5,7 @@ import static java.util.Objects.requireNonNull;
 import plan3.statics.model.Cache;
 import plan3.statics.model.Content;
 import plan3.statics.model.NotModifiedException;
-import plan3.statics.model.Static;
+import plan3.statics.model.Location;
 import plan3.statics.model.Storage;
 
 import com.sun.jersey.api.ConflictException;
@@ -20,7 +20,7 @@ public class AddCommand extends Command {
     }
 
     @Override
-    public Static call() throws Exception {
+    public Location call() throws Exception {
         if(this.cache.hasId(this.candidate.path())) {
             final boolean persisted = this.storage.exists(this.candidate.path());
             final boolean cached = this.cache.exists(this.candidate.path());

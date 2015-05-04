@@ -5,7 +5,7 @@ import static java.util.stream.Collectors.toList;
 import plan3.pure.jersey.exceptions.BadRequestException;
 import plan3.pure.jersey.providers.AbstractInjectableProvider;
 import plan3.statics.model.Revision;
-import plan3.statics.model.Static;
+import plan3.statics.model.Location;
 
 import java.util.List;
 
@@ -14,20 +14,20 @@ import javax.ws.rs.core.PathSegment;
 import com.sun.jersey.api.core.HttpContext;
 import com.sun.jersey.api.core.HttpRequestContext;
 
-public class StaticProvider extends AbstractInjectableProvider<Static> {
+public class StaticProvider extends AbstractInjectableProvider<Location> {
     public StaticProvider() {
-        super(Static.class);
+        super(Location.class);
     }
 
     @Override
-    public Static getValue(final HttpContext c) {
+    public Location getValue(final HttpContext c) {
         final HttpRequestContext request = c.getRequest();
         return from(request, RevisionProvider.from(request));
     }
 
-    public static Static from(final HttpRequestContext request, final Revision revision) {
+    public static Location from(final HttpRequestContext request, final Revision revision) {
         final List<String> segments = segments(request);
-        return new Static(segments.get(0), segments.get(1), segments.get(2), revision);
+        return new Location(segments.get(0), segments.get(1), segments.get(2), revision);
     }
 
     private static List<String> segments(final HttpRequestContext request) {

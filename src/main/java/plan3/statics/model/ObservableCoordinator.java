@@ -23,22 +23,22 @@ public class ObservableCoordinator extends Observable implements Coordinator {
     }
 
     @Override
-    public Static update(final Static previous, final Content candidate) throws Exception {
+    public Location update(final Location previous, final Content candidate) throws Exception {
         return execute(candidate.path(), new UpdateCommand(this.cache, this.storage, previous, candidate));
     }
 
     @Override
-    public Static add(final Content candidate) throws Exception {
+    public Location add(final Content candidate) throws Exception {
         return execute(candidate.path(), new AddCommand(this.cache, this.storage, candidate));
     }
 
     @Override
-    public Static delete(final Static target) throws Exception {
+    public Location delete(final Location target) throws Exception {
         return execute(target, new DeleteCommand(this.cache, this.storage, target));
     }
 
-    private Static execute(final Static path, final Command action) throws Exception {
-        final Static result = this.lock.execute(path, action);
+    private Location execute(final Location path, final Command action) throws Exception {
+        final Location result = this.lock.execute(path, action);
         super.setChanged();
         super.notifyObservers(result);
         return result;

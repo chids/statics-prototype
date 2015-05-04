@@ -4,7 +4,7 @@ import static java.util.Objects.requireNonNull;
 
 import plan3.statics.model.Cache;
 import plan3.statics.model.Content;
-import plan3.statics.model.Static;
+import plan3.statics.model.Location;
 import plan3.statics.model.Storage;
 
 import java.util.concurrent.Callable;
@@ -12,7 +12,7 @@ import java.util.concurrent.Callable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class Command implements Callable<Static> {
+public abstract class Command implements Callable<Location> {
     protected final Storage storage;
     protected final Cache cache;
     protected final Logger LOG = LoggerFactory.getLogger(getClass());
@@ -22,7 +22,7 @@ public abstract class Command implements Callable<Static> {
         this.storage = requireNonNull(storage, "Storage");
     }
 
-    protected Static write(final Content content) {
+    protected Location write(final Content content) {
         this.storage.put(content);
         this.cache.put(content);
         return content.path();

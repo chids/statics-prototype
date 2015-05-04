@@ -4,7 +4,7 @@ import static javax.ws.rs.core.HttpHeaders.ETAG;
 import plan3.statics.model.Content;
 import plan3.statics.model.Coordinator;
 import plan3.statics.model.Revision;
-import plan3.statics.model.Static;
+import plan3.statics.model.Location;
 
 import java.net.URI;
 
@@ -27,7 +27,7 @@ public class ContentResource {
 
     @POST
     public Response add(@Context final Content content) throws Exception {
-        final Static added = this.coordinator.add(content);
+        final Location added = this.coordinator.add(content);
         return Response.created(URI.create(added.toString('/')))
                 .type(content.mime())
                 .header(ETAG, content.path().revision())
@@ -36,7 +36,7 @@ public class ContentResource {
 
     @PUT
     public Response update(@Context final Revision current, @Context final Content candidate) throws Exception {
-        final Static updated = this.coordinator.update(candidate.path().withRevision(current), candidate);
+        final Location updated = this.coordinator.update(candidate.path().withRevision(current), candidate);
         return Response.status(Status.ACCEPTED)
                 .location(URI.create(updated.toString('/')))
                 .type(candidate.mime())
@@ -46,7 +46,7 @@ public class ContentResource {
     }
 
     @DELETE
-    public void delete(@Context final Static target) throws Exception {
+    public void delete(@Context final Location target) throws Exception {
         this.coordinator.delete(target);
     }
 }

@@ -10,7 +10,7 @@ import plan3.statics.model.Cache;
 import plan3.statics.model.Content;
 import plan3.statics.model.NotModifiedException;
 import plan3.statics.model.Revision;
-import plan3.statics.model.Static;
+import plan3.statics.model.Location;
 import plan3.statics.model.Storage;
 
 import org.junit.Test;
@@ -30,7 +30,7 @@ public class UpdateCommandTest {
 
     @Test
     public void success() throws Exception {
-        final Static previous = new Static("domain", "type", "id", new Revision("foo"));
+        final Location previous = new Location("domain", "type", "id", new Revision("foo"));
         final Content candidate = new Content(previous.withRevision(new Revision("bar")), "bar");
         when(this.cache.hasId(previous)).thenReturn(true);
         when(this.cache.exists(previous)).thenReturn(true);
@@ -42,7 +42,7 @@ public class UpdateCommandTest {
 
     @Test
     public void alreadyInCache() throws Exception {
-        final Static first = new Static("domain", "type", "id", new Revision("bar"));
+        final Location first = new Location("domain", "type", "id", new Revision("bar"));
         when(this.cache.hasId(first)).thenReturn(true);
         when(this.cache.exists(first)).thenReturn(true);
         try {
@@ -56,7 +56,7 @@ public class UpdateCommandTest {
 
     @Test
     public void wrongRevisionInCache() throws Exception {
-        final Static first = new Static("domain", "type", "id", new Revision("bar"));
+        final Location first = new Location("domain", "type", "id", new Revision("bar"));
         when(this.cache.hasId(first)).thenReturn(true);
         try {
             new UpdateCommand(this.cache, this.storage, first, new Content(first, "bar")).call();
@@ -69,7 +69,7 @@ public class UpdateCommandTest {
 
     @Test
     public void notInCache() throws Exception {
-        final Static first = new Static("domain", "type", "id", new Revision("bar"));
+        final Location first = new Location("domain", "type", "id", new Revision("bar"));
         when(this.cache.hasId(first)).thenReturn(false);
         try {
             new UpdateCommand(this.cache, this.storage, first, new Content(first, "bar")).call();

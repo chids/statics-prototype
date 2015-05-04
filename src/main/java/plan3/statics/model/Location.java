@@ -6,22 +6,22 @@ import java.util.Objects;
 
 import com.google.common.base.Joiner;
 
-public class Static {
+public class Location {
     private static final String CURRENT = "/current";
     private final String domain;
     private final String type;
     private final String id;
     private final Revision revision;
 
-    public Static(final String domain, final String type, final String id, final Revision revision) {
+    public Location(final String domain, final String type, final String id, final Revision revision) {
         this.domain = notEmpty(domain, "Domain");
         this.type = notEmpty(type, "Type");
         this.id = notEmpty(id, "Id");
         this.revision = requireNonNull(revision, "Revision");
     }
 
-    public Static withRevision(final Revision revision) {
-        return new Static(this.domain, this.type, this.id, revision);
+    public Location withRevision(final Revision revision) {
+        return new Location(this.domain, this.type, this.id, revision);
     }
 
     public String current() {
@@ -47,8 +47,8 @@ public class Static {
 
     @Override
     public boolean equals(final Object o) {
-        if(o instanceof Static) {
-            final Static that = (Static)o;
+        if(o instanceof Location) {
+            final Location that = (Location)o;
             return Objects.equals(this.domain, that.domain)
                     && Objects.equals(this.type, that.type)
                     && Objects.equals(this.id, that.id)

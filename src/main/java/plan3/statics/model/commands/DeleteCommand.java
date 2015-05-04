@@ -4,20 +4,20 @@ import static java.util.Objects.requireNonNull;
 
 import plan3.pure.jersey.exceptions.PreconditionFailedException;
 import plan3.statics.model.Cache;
-import plan3.statics.model.Static;
+import plan3.statics.model.Location;
 import plan3.statics.model.Storage;
 
 public class DeleteCommand extends Command {
 
-    private final Static target;
+    private final Location target;
 
-    public DeleteCommand(final Cache cache, final Storage storage, final Static target) {
+    public DeleteCommand(final Cache cache, final Storage storage, final Location target) {
         super(cache, storage);
         this.target = requireNonNull(target, "Target");
     }
 
     @Override
-    public Static call() throws Exception {
+    public Location call() throws Exception {
         if(this.cache.hasId(this.target)) {
             if(this.cache.exists(this.target)) {
                 this.cache.remove(this.target);

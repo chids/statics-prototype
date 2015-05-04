@@ -16,7 +16,7 @@ import io.dropwizard.testing.junit.ResourceTestRule;
 import plan3.statics.model.Content;
 import plan3.statics.model.Coordinator;
 import plan3.statics.model.Revision;
-import plan3.statics.model.Static;
+import plan3.statics.model.Location;
 
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -44,7 +44,7 @@ public class ContentResourceTest {
     @Test
     public void delete() throws Exception {
         final Revision revision = new Revision("blah");
-        final Static version1 = new Static("domain", "type", "id", revision);
+        final Location version1 = new Location("domain", "type", "id", revision);
         final ClientResponse response = resources.client()
                 .resource("/domain/type/id")
                 .type(TEXT_PLAIN)

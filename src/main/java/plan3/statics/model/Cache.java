@@ -2,12 +2,12 @@ package plan3.statics.model;
 
 public interface Cache extends Persistence {
 
-    Static get(Static path);
+    Location get(Location path);
 
-    boolean hasId(Static path);
+    boolean hasId(Location path);
 
     // Caches must use the path without the revision as the cache key
-    default String key(final Static path) {
+    default String key(final Location path) {
         return path.toStringWithoutRevision(':');
     }
 }
