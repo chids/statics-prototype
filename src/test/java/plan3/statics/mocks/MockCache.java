@@ -12,8 +12,7 @@ public class MockCache implements Cache {
     private final Map<String, Revision> cache = new HashMap<>();
 
     @Override
-    public Static get(final Content content) {
-        final Static path = content.path();
+    public Static get(final Static path) {
         return path.withRevision(this.cache.get(key(path)));
     }
 

@@ -15,9 +15,8 @@ public class RedisCache implements Cache {
     }
 
     @Override
-    public Static get(final Content content) {
-        final Static path = content.path();
-        return path.withRevision(get(path));
+    public Static get(final Static path) {
+        return path.withRevision(read(path));
     }
 
     @Override
@@ -47,7 +46,7 @@ public class RedisCache implements Cache {
         }
     }
 
-    private Revision get(final Static path) {
+    private Revision read(final Static path) {
         try(Jedis nonTx = this.jedis.nonTx()) {
             return new Revision(HashCode.fromString(nonTx.get(key(path))));
         }

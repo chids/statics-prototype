@@ -2,7 +2,7 @@ package plan3.statics.model;
 
 public interface Cache extends Persistence {
 
-    Static get(Content content);
+    Static get(Static path);
 
     boolean hasId(Static path);
 
