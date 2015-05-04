@@ -20,8 +20,8 @@ public class DeleteCommand extends Command {
         if(this.cache.exists(this.target)) {
             if(this.storage.exists(this.target)) {
                 this.storage.remove(this.target);
-                this.cache.remove(this.target);
             }
+            this.cache.remove(this.target);
         }
         return this.target;
     }
