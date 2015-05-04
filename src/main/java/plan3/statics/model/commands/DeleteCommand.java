@@ -2,11 +2,10 @@ package plan3.statics.model.commands;
 
 import static java.util.Objects.requireNonNull;
 
+import plan3.pure.jersey.exceptions.PreconditionFailedException;
 import plan3.statics.model.Cache;
 import plan3.statics.model.Static;
 import plan3.statics.model.Storage;
-
-import com.sun.jersey.api.ConflictException;
 
 public class DeleteCommand extends Command {
 
@@ -27,7 +26,7 @@ public class DeleteCommand extends Command {
                 }
             }
             else {
-                throw new ConflictException("Outdated revision: " + this.target);
+                throw new PreconditionFailedException("Not current revision: " + this.target);
             }
         }
         return this.target;

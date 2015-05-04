@@ -2,12 +2,12 @@ package plan3.statics.model.commands;
 
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
+import plan3.pure.jersey.exceptions.PreconditionFailedException;
 import plan3.statics.model.Cache;
 import plan3.statics.model.Revision;
 import plan3.statics.model.Static;
@@ -17,8 +17,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-
-import com.sun.jersey.api.ConflictException;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DeleteCommandTest {
@@ -37,7 +35,7 @@ public class DeleteCommandTest {
             new DeleteCommand(this.cache, this.storage, path).call();
             fail("Exception expected");
         }
-        catch(final ConflictException expected) {}
+        catch(final PreconditionFailedException expected) {}
         verify(this.cache, never()).remove(path);
         verifyNoMoreInteractions(this.storage);
     }
@@ -75,15 +73,13 @@ public class DeleteCommandTest {
 
     @Test
     public void success() throws Exception {
-        final Cache cache = mock(Cache.class);
-        final Storage storage = mock(Storage.class);
         final Static path = new Static("domain", "type", "id", new Revision("foo"));
-        when(cache.hasId(path)).thenReturn(true);
-        when(cache.exists(path)).thenReturn(true);
-        when(storage.exists(path)).thenReturn(true);
-        new DeleteCommand(cache, storage, path).call();
-        verify(cache).remove(path);
-        verify(storage).remove(path);
+        when(this.cache.hasId(path)).thenReturn(true);
+        when(this.cache.exists(path)).thenReturn(true);
+        when(this.storage.exists(path)).thenReturn(true);
+        new DeleteCommand(this.cache, this.storage, path).call();
+        verify(this.cache).remove(path);
+        verify(this.storage).remove(path);
     }
 
     @Test
