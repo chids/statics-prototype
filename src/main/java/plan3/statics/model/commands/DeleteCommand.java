@@ -6,6 +6,8 @@ import plan3.statics.model.Cache;
 import plan3.statics.model.Static;
 import plan3.statics.model.Storage;
 
+import com.sun.jersey.api.ConflictException;
+
 public class DeleteCommand extends Command {
 
     private final Static target;
@@ -17,11 +19,16 @@ public class DeleteCommand extends Command {
 
     @Override
     public Static call() throws Exception {
-        if(this.cache.exists(this.target)) {
-            if(this.storage.exists(this.target)) {
-                this.storage.remove(this.target);
+        if(this.cache.hasId(this.target)) {
+            if(this.cache.exists(this.target)) {
+                this.cache.remove(this.target);
+                if(this.storage.exists(this.target)) {
+                    this.storage.remove(this.target);
+                }
             }
-            this.cache.remove(this.target);
+            else {
+                throw new ConflictException("Outdated revision: " + this.target);
+            }
         }
         return this.target;
     }
