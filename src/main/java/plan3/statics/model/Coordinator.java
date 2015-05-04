@@ -6,4 +6,6 @@ public interface Coordinator {
 
     Static add(Content candidate) throws Exception;
 
+    Static delete(Static target) throws Exception;
+
 }

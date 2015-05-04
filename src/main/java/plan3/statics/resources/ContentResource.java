@@ -8,6 +8,7 @@ import plan3.statics.model.Static;
 
 import java.net.URI;
 
+import javax.ws.rs.DELETE;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -44,7 +45,8 @@ public class ContentResource {
                 .build();
     }
 
-    public void delete() {
-        // Implements as update with zero length content?
+    @DELETE
+    public void delete(@Context final Static target) throws Exception {
+        this.coordinator.delete(target);
     }
 }

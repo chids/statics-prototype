@@ -5,6 +5,7 @@ import static javax.ws.rs.core.HttpHeaders.IF_MATCH;
 import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
 import static javax.ws.rs.core.Response.Status.ACCEPTED;
 import static javax.ws.rs.core.Response.Status.CREATED;
+import static javax.ws.rs.core.Response.Status.NO_CONTENT;
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -14,6 +15,8 @@ import static org.mockito.Mockito.when;
 import io.dropwizard.testing.junit.ResourceTestRule;
 import plan3.statics.model.Content;
 import plan3.statics.model.Coordinator;
+import plan3.statics.model.Revision;
+import plan3.statics.model.Static;
 
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -30,11 +33,25 @@ public class ContentResourceTest {
             .addResource(new ContentResource(coordinator))
             .addProvider(ContentProvider.class)
             .addProvider(RevisionProvider.class)
+            .addProvider(StaticProvider.class)
             .build();
 
     @Before
     public void reset() {
         Mockito.reset(coordinator);
+    }
+
+    @Test
+    public void delete() throws Exception {
+        final Revision revision = new Revision("blah");
+        final Static version1 = new Static("domain", "type", "id", revision);
+        final ClientResponse response = resources.client()
+                .resource("/domain/type/id")
+                .type(TEXT_PLAIN)
+                .header(IF_MATCH, revision.toString())
+                .delete(ClientResponse.class);
+        verify(coordinator).delete(version1);
+        assertEquals(NO_CONTENT.getStatusCode(), response.getStatus());
     }
 
     @Test

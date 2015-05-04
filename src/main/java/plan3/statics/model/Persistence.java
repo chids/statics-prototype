@@ -6,5 +6,5 @@ public interface Persistence {
 
     public boolean exists(final Static path);
 
-    public void remove(final Static path);
+    void remove(final Static path);
 }

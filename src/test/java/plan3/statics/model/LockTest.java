@@ -20,7 +20,7 @@ public class LockTest {
     public void timeout() throws Exception {
         final MockLock lock = new MockLock();
         final Content version1 = new Content("domain", "type", "id", "version 1");
-        lock.execute(version1, () -> {
+        lock.execute(version1.path(), () -> {
             sleep(lock.timeout.to(TimeUnit.MILLISECONDS) * 2);
             return null;
         });
@@ -37,13 +37,13 @@ public class LockTest {
     public void conflicting() {
         final Lock lock = new MockLock();
         final Content version1 = new Content("domain", "type", "id", "version 1");
-        try(Token v1 = lock.acquire(version1)) {
+        try(Token v1 = lock.acquire(version1.path())) {
             try {
-                lock.acquire(version1.update("version 2")).close();
+                lock.acquire(version1.update("version 2").path()).close();
                 fail("Lock already acquired");
             }
-            catch(final ConcurrentModificationException e) {}
+            catch(final ConcurrentModificationException expected) {}
         }
-        lock.acquire(version1).close();
+        lock.acquire(version1.path()).close();
     }
 }

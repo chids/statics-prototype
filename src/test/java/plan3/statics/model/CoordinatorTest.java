@@ -29,10 +29,10 @@ public class CoordinatorTest {
         final Coordinator coordinator = new ObservableCoordinator(new MockCache(), new MockStorage(), lock);
         final Content version1 = new Content("domain", "type", "id", "blah");
         final Static revision1 = coordinator.add(version1);
-        verify(lock).execute(eq(version1), any(Callable.class));
+        verify(lock).execute(eq(version1.path()), any(Callable.class));
         final Content version2 = version1.update("mooo");
         coordinator.update(revision1, version2);
-        verify(lock).execute(eq(version2), any(Callable.class));
+        verify(lock).execute(eq(version2.path()), any(Callable.class));
     }
 
     @Test

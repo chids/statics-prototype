@@ -27,12 +27,27 @@ public class ObservableCoordinator extends Observable implements Coordinator {
 
     @Override
     public Static update(final Static previous, final Content candidate) throws Exception {
-        return this.lock.execute(candidate, () -> conditionalWrite(previous, candidate));
+        return this.lock.execute(candidate.path(), () -> conditionalWrite(previous, candidate));
     }
 
     @Override
     public Static add(final Content candidate) throws Exception {
-        return this.lock.execute(candidate, () -> unconditionalAdd(candidate));
+        return this.lock.execute(candidate.path(), () -> unconditionalAdd(candidate));
+    }
+
+    @Override
+    public Static delete(final Static target) throws Exception {
+        return this.lock.execute(target, () -> conditionalDelete(target));
+    }
+
+    private Static conditionalDelete(final Static target) {
+        if(this.cache.exists(target)) {
+            if(this.storage.exists(target)) {
+                this.storage.remove(target);
+                this.cache.remove(target);
+            }
+        }
+        return target;
     }
 
     private Static conditionalWrite(final Static previous, final Content candidate) {

@@ -21,8 +21,8 @@ public abstract class Lock {
         this.timeout = requireNonNull(timeout, "Timeout");
     }
 
-    public Static execute(final Content content, final Callable<Static> task) throws Exception {
-        try(Token token = acquire(content)) {
+    public Static execute(final Static path, final Callable<Static> task) throws Exception {
+        try(Token token = acquire(path)) {
             final Future<Static> future = executor.submit(task);
             try {
                 return future.get(this.timeout.to(TimeUnit.MILLISECONDS), TimeUnit.MILLISECONDS);
@@ -38,8 +38,8 @@ public abstract class Lock {
         }
     }
 
-    Token acquire(final Content content) {
-        final String key = "lock:".concat(content.path().toStringWithoutRevision(':'));
+    Token acquire(final Static path) {
+        final String key = "lock:".concat(path.toStringWithoutRevision(':'));
         if(lock(key)) {
             return () -> unlock(key);
         }
