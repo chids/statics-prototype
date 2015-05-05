@@ -37,11 +37,10 @@ public class S3Storage implements Storage {
     }
 
     @Override
-    public boolean exists(final Located item) {
+    public boolean exists(final Location location) {
         try {
-            Location path = item.where();
-            final String revision = this.s3.getObjectMetadata(this.bucket, key(path)).getETag();
-            return path.toString('/').endsWith(revision);
+            final String revision = this.s3.getObjectMetadata(this.bucket, key(location)).getETag();
+            return location.toString('/').endsWith(revision);
         }
         catch(final AmazonS3Exception ase) {
             if(ase.getStatusCode() == 404) {
@@ -52,11 +51,11 @@ public class S3Storage implements Storage {
     }
 
     @Override
-    public Content get(final Location path) {
-        final S3Object result = this.s3.getObject(this.bucket, key(path));
+    public Content get(final Location location) {
+        final S3Object result = this.s3.getObject(this.bucket, key(location));
         try(InputStream content = result.getObjectContent()) {
             final MediaType mime = MediaType.valueOf(result.getObjectMetadata().getContentType());
-            return new Content(path, mime, ByteStreams.toByteArray(content));
+            return new Content(location, mime, ByteStreams.toByteArray(content));
         }
         catch(final IOException e) {
             throw new IllegalStateException(e);
@@ -64,7 +63,7 @@ public class S3Storage implements Storage {
     }
 
     @Override
-    public void remove(final Located item) {
-        this.s3.deleteObject(this.bucket, key(item));
+    public void remove(final Location location) {
+        this.s3.deleteObject(this.bucket, key(location));
     }
 }

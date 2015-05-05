@@ -1,11 +1,9 @@
 package plan3.statics.mocks;
 
-import plan3.statics.model.Located;
-
 import plan3.statics.model.Cache;
 import plan3.statics.model.Content;
-import plan3.statics.model.Revision;
 import plan3.statics.model.Location;
+import plan3.statics.model.Revision;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,18 +12,18 @@ public class MockCache implements Cache {
     private final Map<String, Revision> cache = new HashMap<>();
 
     @Override
-    public Location get(final Located item) {
-        return item.where().withRevision(this.cache.get(key(item)));
+    public Location get(final Location location) {
+        return location.withRevision(this.cache.get(key(location)));
     }
 
     @Override
-    public boolean hasId(final Located item) {
-        return this.cache.containsKey(key(item));
+    public boolean hasId(final Location location) {
+        return this.cache.containsKey(key(location));
     }
 
     @Override
-    public boolean exists(final Located item) {
-        return item.where().revision().equals(this.cache.get(key(item)));
+    public boolean exists(final Location location) {
+        return location.revision().equals(this.cache.get(key(location)));
     }
 
     @Override
@@ -35,7 +33,7 @@ public class MockCache implements Cache {
     }
 
     @Override
-    public void remove(final Located item) {
-        this.cache.remove(key(item));
+    public void remove(final Location location) {
+        this.cache.remove(key(location));
     }
 }

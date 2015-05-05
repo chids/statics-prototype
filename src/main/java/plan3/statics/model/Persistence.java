@@ -4,7 +4,15 @@ public interface Persistence {
 
     void put(final Content content);
 
-    public boolean exists(Located item);
+    default boolean exists(final Located item) {
+        return exists(item.where());
+    }
 
-    void remove(Located item);
+    boolean exists(Location location);
+
+    default void remove(final Located item) {
+        remove(item.where());
+    }
+
+    void remove(Location location);
 }

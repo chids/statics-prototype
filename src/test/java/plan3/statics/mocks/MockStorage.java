@@ -1,7 +1,6 @@
 package plan3.statics.mocks;
 
 import plan3.statics.model.Content;
-import plan3.statics.model.Located;
 import plan3.statics.model.Location;
 import plan3.statics.model.Storage;
 
@@ -17,17 +16,17 @@ public class MockStorage implements Storage {
     }
 
     @Override
-    public boolean exists(final Located item) {
-        return this.storage.containsKey(key(item));
+    public boolean exists(final Location location) {
+        return this.storage.containsKey(key(location));
     }
 
     @Override
-    public Content get(final Location path) {
-        return this.storage.get(key(path));
+    public Content get(final Location location) {
+        return this.storage.get(key(location));
     }
 
     @Override
-    public void remove(final Located item) {
-        this.storage.remove(key(item));
+    public void remove(final Location location) {
+        this.storage.remove(key(location));
     }
 }

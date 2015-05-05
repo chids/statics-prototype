@@ -1,7 +1,6 @@
 package plan3.statics.model;
 
 import static java.util.Objects.requireNonNull;
-
 import plan3.pure.redis.JedisUtil;
 import redis.clients.jedis.Jedis;
 
@@ -15,22 +14,20 @@ public class RedisCache implements Cache {
     }
 
     @Override
-    public Location get(final Located item) {
-        Location path = item.where();
-        return path.withRevision(read(path));
+    public Location get(final Location location) {
+        return location.withRevision(read(location));
     }
 
     @Override
-    public boolean hasId(final Located item) {
+    public boolean hasId(final Location location) {
         try(Jedis nonTx = this.jedis.nonTx()) {
-            return nonTx.exists(key(item.where()));
+            return nonTx.exists(key(location));
         }
     }
 
     @Override
-    public boolean exists(final Located item) {
-        Location path = item.where();
-        return path.revision().equals(get(path));
+    public boolean exists(final Location location) {
+        return location.revision().equals(get(location));
     }
 
     @Override
@@ -41,9 +38,9 @@ public class RedisCache implements Cache {
     }
 
     @Override
-    public void remove(final Located item) {
+    public void remove(final Location location) {
         try(Jedis nonTx = this.jedis.nonTx()) {
-            nonTx.del(key(item.where()));
+            nonTx.del(key(location));
         }
     }
 
