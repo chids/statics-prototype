@@ -21,39 +21,38 @@ public class AddCommand extends Command {
 
     @Override
     public Location call() throws Exception {
-        if(this.cache.hasId(this.candidate.path())) {
-            final boolean persisted = this.storage.exists(this.candidate.path());
-            final boolean cached = this.cache.exists(this.candidate.path());
+        if(this.cache.hasId(this.candidate)) {
+            final boolean cached = this.cache.exists(this.candidate);
+            final boolean persisted = this.storage.exists(this.candidate);
             if(persisted && cached) {
-                this.LOG.warn("{} NOT written, content exists in storage and cache", this.candidate.path());
-                throw new NotModifiedException(this.candidate.path());
+                this.LOG.warn("{} NOT written, content exists in storage and cache", this.candidate);
+                throw new NotModifiedException(this.candidate.where());
             }
             if(cached) {
                 // Case: Removed directly from S3
-                this.cache.remove(this.candidate.path());
-                this.LOG.warn("{} EVICTED, content exists in cache but NOT in storage", this.candidate.path());
+                this.cache.remove(this.candidate);
+                this.LOG.warn("{} EVICTED, content exists in cache but NOT in storage", this.candidate);
             }
             if(persisted) {
                 // => Update cache from storage and reject
                 this.cache.put(this.candidate);
-                this.LOG.warn("{} REFRESHED, exists in storage but cache has OTHER revision",
-                        this.candidate.path());
+                this.LOG.warn("{} REFRESHED, exists in storage but cache has OTHER revision", this.candidate);
             }
             else {
-                this.LOG.warn("{} REJECTED, exists in cache but with OTHER revision", this.candidate.path());
+                this.LOG.warn("{} REJECTED, exists in cache but with OTHER revision", this.candidate);
             }
             throw new ConflictException("Cache out of sync: " + this.candidate);
         }
-        if(this.storage.exists(this.candidate.path())) {
+        if(this.storage.exists(this.candidate)) {
             // Already exists in storage but not in cache
             // => Update cache from storage and reject
             // (case: Evicted from cache)
             this.cache.put(this.candidate);
-            this.LOG.warn("{} REFRESHED, exists in storage, NOT in cache", this.candidate.path());
+            this.LOG.warn("{} REFRESHED, exists in storage, NOT in cache", this.candidate);
             throw new ConflictException("Cache out of sync: " + this.candidate);
         }
         // Not in cache, not in storage: NEW WRITE
-        this.LOG.warn("{} WRITTEN, not in cache not storage", this.candidate.path());
+        this.LOG.warn("{} WRITTEN, not in cache not storage", this.candidate);
         return write(this.candidate);
     }
 }

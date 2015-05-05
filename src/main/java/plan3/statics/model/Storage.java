@@ -5,11 +5,7 @@ public interface Storage extends Persistence {
     Content get(Location path);
 
     // This assumes S3 or in memory HashMap
-    default String key(final Location path) {
-        return path.toString('/');
-    }
-
-    default String key(final Content content) {
-        return key(content.path());
+    default String key(final Located item) {
+        return item.where().toString('/');
     }
 }

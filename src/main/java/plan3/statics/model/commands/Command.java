@@ -25,6 +25,6 @@ public abstract class Command implements Callable<Location> {
     protected Location write(final Content content) {
         this.storage.put(content);
         this.cache.put(content);
-        return content.path();
+        return content.where();
     }
 }

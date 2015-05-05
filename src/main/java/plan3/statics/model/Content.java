@@ -13,7 +13,7 @@ import javax.ws.rs.core.MediaType;
 
 import com.google.common.base.Charsets;
 
-public class Content {
+public class Content implements Located {
     private final Location path;
     private final MediaType mime;
     private final byte[] content;
@@ -63,7 +63,8 @@ public class Content {
         return new ByteArrayInputStream(this.content);
     }
 
-    public Location path() {
+    @Override
+    public Location where() {
         return this.path;
     }
 

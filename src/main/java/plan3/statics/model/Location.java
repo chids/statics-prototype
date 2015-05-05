@@ -6,7 +6,7 @@ import java.util.Objects;
 
 import com.google.common.base.Joiner;
 
-public class Location {
+public class Location implements Located {
     private static final String CURRENT = "/current";
     private final String domain;
     private final String type;
@@ -22,6 +22,11 @@ public class Location {
 
     public Location withRevision(final Revision revision) {
         return new Location(this.domain, this.type, this.id, revision);
+    }
+
+    @Override
+    public Location where() {
+        return this;
     }
 
     public String current() {

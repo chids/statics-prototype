@@ -57,15 +57,15 @@ public class ContentResourceTest {
     @Test
     public void post() throws Exception {
         final Content version1 = new Content("domain", "type", "id", "content");
-        when(coordinator.add(version1)).thenReturn(version1.path());
+        when(coordinator.add(version1)).thenReturn(version1.where());
         final ClientResponse response = resources.client()
                 .resource("/domain/type/id")
                 .type(TEXT_PLAIN)
                 .post(ClientResponse.class, version1.content());
         verify(coordinator).add(version1);
         assertEquals(CREATED.getStatusCode(), response.getStatus());
-        assertThat(response.getLocation().toString()).endsWith(version1.path().toString('/'));
-        assertEquals(version1.path().revision().toString(), response.getHeaders().getFirst(ETAG));
+        assertThat(response.getLocation().toString()).endsWith(version1.where().toString('/'));
+        assertEquals(version1.where().revision().toString(), response.getHeaders().getFirst(ETAG));
     }
 
     @Test
@@ -73,16 +73,16 @@ public class ContentResourceTest {
         post();
         final Content version1 = new Content("domain", "type", "id", "content");
         final Content version2 = version1.update("new content");
-        when(coordinator.update(version1.path(), version2)).thenReturn(version2.path());
+        when(coordinator.update(version1.where(), version2)).thenReturn(version2.where());
         final ClientResponse response = resources.client()
                 .resource("/domain/type/id")
                 .type(TEXT_PLAIN)
-                .header(IF_MATCH, version1.path().revision())
+                .header(IF_MATCH, version1.where().revision())
                 .put(ClientResponse.class, version2.content());
         verify(coordinator).add(version1);
-        verify(coordinator).update(version1.path(), version2);
+        verify(coordinator).update(version1.where(), version2);
         assertEquals(ACCEPTED.getStatusCode(), response.getStatus());
-        assertThat(response.getLocation().toString()).endsWith(version2.path().toString('/'));
-        assertEquals(version2.path().revision().toString(), response.getHeaders().getFirst(ETAG));
+        assertThat(response.getLocation().toString()).endsWith(version2.where().toString('/'));
+        assertEquals(version2.where().revision().toString(), response.getHeaders().getFirst(ETAG));
     }
 }

@@ -33,12 +33,13 @@ public class S3Storage implements Storage {
         metadata.setHeader(Headers.S3_CANNED_ACL, CannedAccessControlList.PublicRead);
         this.s3.putObject(this.bucket, key(content), content.content(), metadata);
         metadata.setHeader(Headers.REDIRECT_LOCATION, "/".concat(key(content)));
-        this.s3.putObject(this.bucket, content.path().current(), empty, metadata);
+        this.s3.putObject(this.bucket, content.where().current(), empty, metadata);
     }
 
     @Override
-    public boolean exists(final Location path) {
+    public boolean exists(final Located item) {
         try {
+            Location path = item.where();
             final String revision = this.s3.getObjectMetadata(this.bucket, key(path)).getETag();
             return path.toString('/').endsWith(revision);
         }
@@ -63,7 +64,7 @@ public class S3Storage implements Storage {
     }
 
     @Override
-    public void remove(final Location path) {
-        this.s3.deleteObject(this.bucket, key(path));
+    public void remove(final Located item) {
+        this.s3.deleteObject(this.bucket, key(item));
     }
 }

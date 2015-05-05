@@ -30,13 +30,13 @@ public class CoordinatorTest {
     public void locking() throws Exception {
         final Lock lock = mock(Lock.class);
         final Content version1 = new Content("domain", "type", "id", "blah");
-        when(lock.execute(eq(version1.path()), isA(AddCommand.class))).thenReturn(version1.path());
+        when(lock.execute(eq(version1.where()), isA(AddCommand.class))).thenReturn(version1.where());
         final Coordinator coordinator = new ObservableCoordinator(new MockCache(), new MockStorage(), lock);
         final Location revision1 = coordinator.add(version1);
-        verify(lock).execute(eq(version1.path()), any(Callable.class));
+        verify(lock).execute(eq(version1.where()), any(Callable.class));
         final Content version2 = version1.update("mooo");
         coordinator.update(revision1, version2);
-        verify(lock).execute(eq(version2.path()), any(Callable.class));
+        verify(lock).execute(eq(version2.where()), any(Callable.class));
     }
 
     @Test
@@ -64,8 +64,8 @@ public class CoordinatorTest {
         final ObservableCoordinator coordinator = coordinator(observer);
         final Content version1 = new Content("domain", "type", "id", "blah");
         coordinator.add(version1);
-        assertEquals(version1, coordinator.storage.get(version1.path()));
-        verify(observer).update(coordinator, version1.path());
+        assertEquals(version1, coordinator.storage.get(version1.where()));
+        verify(observer).update(coordinator, version1.where());
     }
 
     @Test
@@ -76,9 +76,9 @@ public class CoordinatorTest {
         final Location revision1 = coordinator.add(version1);
         final Content version2 = version1.update("foo");
         coordinator.update(revision1, version2);
-        assertEquals(coordinator.storage.get(version2.path()), version2);
-        verify(observer, times(1)).update(coordinator, version1.path());
-        verify(observer, times(1)).update(coordinator, version2.path());
+        assertEquals(coordinator.storage.get(version2.where()), version2);
+        verify(observer, times(1)).update(coordinator, version1.where());
+        verify(observer, times(1)).update(coordinator, version2.where());
     }
 
     @Test(expected = ConflictException.class)
@@ -114,7 +114,7 @@ public class CoordinatorTest {
         final ObservableCoordinator coordinator = coordinator();
         final Content version1 = new Content("domain", "type", "id", "blah");
         final Location revision1 = coordinator.add(version1);
-        coordinator.cache.remove(version1.path()); // Remove from cache only
+        coordinator.cache.remove(version1.where()); // Remove from cache only
         coordinator.update(revision1, version1.update("version 2"));
     }
 
@@ -124,12 +124,12 @@ public class CoordinatorTest {
         final ObservableCoordinator coordinator = coordinator(observer);
         final Content version1 = new Content("domain", "type", "id", "blah");
         final Location revision1 = coordinator.add(version1);
-        coordinator.storage.remove(version1.path()); // Remove from storage only
+        coordinator.storage.remove(version1.where()); // Remove from storage only
         final Content version2 = version1.update("version 2");
         coordinator.update(revision1, version2);
-        assertEquals(coordinator.storage.get(version2.path()), version2);
-        verify(observer, times(1)).update(coordinator, version1.path());
-        verify(observer, times(1)).update(coordinator, version2.path());
+        assertEquals(coordinator.storage.get(version2.where()), version2);
+        verify(observer, times(1)).update(coordinator, version1.where());
+        verify(observer, times(1)).update(coordinator, version2.where());
     }
 
     private static ObservableCoordinator coordinator(final Observer observer) {

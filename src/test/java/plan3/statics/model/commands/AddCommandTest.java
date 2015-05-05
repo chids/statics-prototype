@@ -32,7 +32,7 @@ public class AddCommandTest {
         final Content candidate = new Content(path, "foo");
         when(this.cache.hasId(path)).thenReturn(false);
         when(this.cache.exists(path)).thenReturn(false);
-        when(this.cache.exists(candidate.path())).thenReturn(false);
+        when(this.cache.exists(candidate.where())).thenReturn(false);
         new AddCommand(this.cache, this.storage, candidate).call();
         verify(this.cache).put(candidate);
         verify(this.storage).put(candidate);
@@ -40,10 +40,9 @@ public class AddCommandTest {
 
     @Test
     public void existsInStorageAndCache() throws Exception {
-        final Location path = new Location("domain", "type", "id", new Revision("foo"));
-        final Content candidate = new Content(path, "foo");
-        when(this.cache.hasId(path)).thenReturn(true);
-        when(this.cache.exists(path)).thenReturn(true);
+        final Content candidate = new Content(new Location("domain", "type", "id", new Revision("foo")), "foo");
+        when(this.cache.hasId(candidate)).thenReturn(true);
+        when(this.cache.exists(candidate)).thenReturn(true);
         try {
             new AddCommand(this.cache, this.storage, candidate).call();
             fail("Exception expected");
@@ -53,27 +52,25 @@ public class AddCommandTest {
 
     @Test
     public void existsInCacheNotInStorage() throws Exception {
-        final Location path = new Location("domain", "type", "id", new Revision("foo"));
-        final Content candidate = new Content(path, "foo");
-        when(this.cache.hasId(path)).thenReturn(true);
-        when(this.cache.exists(path)).thenReturn(true);
-        when(this.storage.exists(path)).thenReturn(false);
+        final Content candidate = new Content(new Location("domain", "type", "id", new Revision("foo")), "foo");
+        when(this.cache.hasId(candidate)).thenReturn(true);
+        when(this.cache.exists(candidate)).thenReturn(true);
+        when(this.storage.exists(candidate)).thenReturn(false);
         try {
             new AddCommand(this.cache, this.storage, candidate).call();
             fail("Exception expected");
         }
         catch(final ConflictException expected) {}
-        verify(this.cache).remove(path);
+        verify(this.cache).remove(candidate);
         verify(this.storage, never()).put(candidate);
     }
 
     @Test
     public void existsInStorageNotInCache() throws Exception {
-        final Location path = new Location("domain", "type", "id", new Revision("foo"));
-        final Content candidate = new Content(path, "foo");
-        when(this.cache.hasId(path)).thenReturn(true);
-        when(this.cache.exists(path)).thenReturn(false);
-        when(this.storage.exists(path)).thenReturn(true);
+        final Content candidate = new Content(new Location("domain", "type", "id", new Revision("foo")), "foo");
+        when(this.cache.hasId(candidate)).thenReturn(true);
+        when(this.cache.exists(candidate)).thenReturn(false);
+        when(this.storage.exists(candidate)).thenReturn(true);
         try {
             new AddCommand(this.cache, this.storage, candidate).call();
             fail("Exception expected");

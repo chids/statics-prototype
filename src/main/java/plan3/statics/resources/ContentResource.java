@@ -1,10 +1,11 @@
 package plan3.statics.resources;
 
 import static javax.ws.rs.core.HttpHeaders.ETAG;
+
 import plan3.statics.model.Content;
 import plan3.statics.model.Coordinator;
-import plan3.statics.model.Revision;
 import plan3.statics.model.Location;
+import plan3.statics.model.Revision;
 
 import java.net.URI;
 
@@ -30,17 +31,17 @@ public class ContentResource {
         final Location added = this.coordinator.add(content);
         return Response.created(URI.create(added.toString('/')))
                 .type(content.mime())
-                .header(ETAG, content.path().revision())
+                .header(ETAG, content.where().revision())
                 .entity(content.content()).build();
     }
 
     @PUT
     public Response update(@Context final Revision current, @Context final Content candidate) throws Exception {
-        final Location updated = this.coordinator.update(candidate.path().withRevision(current), candidate);
+        final Location updated = this.coordinator.update(candidate.where().withRevision(current), candidate);
         return Response.status(Status.ACCEPTED)
                 .location(URI.create(updated.toString('/')))
                 .type(candidate.mime())
-                .header(ETAG, candidate.path().revision())
+                .header(ETAG, candidate.where().revision())
                 .entity(candidate.content())
                 .build();
     }

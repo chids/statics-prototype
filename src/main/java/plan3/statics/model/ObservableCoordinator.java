@@ -24,12 +24,12 @@ public class ObservableCoordinator extends Observable implements Coordinator {
 
     @Override
     public Location update(final Location previous, final Content candidate) throws Exception {
-        return execute(candidate.path(), new UpdateCommand(this.cache, this.storage, previous, candidate));
+        return execute(candidate, new UpdateCommand(this.cache, this.storage, previous, candidate));
     }
 
     @Override
     public Location add(final Content candidate) throws Exception {
-        return execute(candidate.path(), new AddCommand(this.cache, this.storage, candidate));
+        return execute(candidate, new AddCommand(this.cache, this.storage, candidate));
     }
 
     @Override
@@ -37,8 +37,8 @@ public class ObservableCoordinator extends Observable implements Coordinator {
         return execute(target, new DeleteCommand(this.cache, this.storage, target));
     }
 
-    private Location execute(final Location path, final Command action) throws Exception {
-        final Location result = this.lock.execute(path, action);
+    private Location execute(final Located item, final Command action) throws Exception {
+        final Location result = this.lock.execute(item.where(), action);
         super.setChanged();
         super.notifyObservers(result);
         return result;

@@ -25,9 +25,9 @@ public class UpdateCommand extends Command {
     @Override
     public Location call() throws Exception {
         if(this.cache.hasId(this.previous)) {
-            if(this.cache.exists(this.candidate.path())) {
-                this.LOG.warn("{} NOT written, content already in cache", this.candidate.path());
-                throw new NotModifiedException(this.candidate.path());
+            if(this.cache.exists(this.candidate)) {
+                this.LOG.warn("{} NOT written, content already in cache", this.candidate.where());
+                throw new NotModifiedException(this.candidate.where());
             }
             if(this.cache.exists(this.previous)) {
                 this.LOG.warn("{} WRITTEN, previous version matched", this.previous);
