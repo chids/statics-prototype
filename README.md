@@ -12,14 +12,14 @@ and as such it is a service for read intensive rather than write intensive workl
 * Redis instead of Zookeeper
    * (for coordination and broadcasting changes)
 * Expose the latest revision of each document at a "known URL"
-   * (using AWS S3 webpage redirects)
+   * (using [AWS S3 webpage redirects](http://docs.aws.amazon.com/AmazonS3/latest/dev/how-to-page-redirect.html))
 * Stores any type of content
    * (binary data + mime type)
 
 ### Similarities to Pinterest's Config v2
 
 * Immutable append only storage
-  * (to benefit from S3's "read-after-write" consistency for new files)
+  * (to benefit from [S3 "read-after-write" consistency](http://docs.aws.amazon.com/AmazonS3/latest/dev/Introduction.html#ConsistencyMode) for new files)
 * New versions are written under a per document write lock
   * (managed as a key in Redis)
 
@@ -32,7 +32,7 @@ and as such it is a service for read intensive rather than write intensive workl
 * S3
    * `[domain]/[type]/[id]/[revision]`
    * `[domain]/[type]/[id]/current -> [revision]`
-      * (using [AWS S3 webpage redirect](http://docs.aws.amazon.com/AmazonS3/latest/dev/how-to-page-redirect.html))
+      * (using AWS S3 webpage redirect)
 * Redis:
    * `[domain]:[type]:[id]=[revision]`
    * `lock:[domain]:[type]:[id]`
