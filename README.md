@@ -1,6 +1,10 @@
 # Statics
 
-Immutable (static) data. Characteristics: _expensive to produce, cheap and reliable to consume_.
+Immutable (static) data.
+
+## Characteristics
+
+Expensive to write due to coordination in order to prevent concurrent conflicting writes. Cheap and reliable to read due to easily replicated and, for those that do not require strict _read your own write_ semantics, latest version eventually available at well known URL.
 
 ## About
 
