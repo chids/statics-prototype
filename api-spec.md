@@ -15,9 +15,7 @@ revision | MD5 hash of the current content at the given `location`
 * `HTTP 400` if the request path isn't made up of `{domain}/{type}/{id}`
 * `HTTP 412` if the `If-Match` header is required but missing
 
-## Resources
-
-### Create
+## Create
 
 Creates a new document with an initial revision.
 
@@ -25,7 +23,7 @@ Creates a new document with an initial revision.
 
 > `POST /omni/article/D7BA6377-CA73-41AB-A6D6-046D97506385`
 
-#### Returns
+### Returns
 
 If the request succeeded, then `HTTP 201` is returned with the submitted document in the response body.
 
@@ -38,7 +36,7 @@ Errors:
 * `HTTP 304` if the request matches the document's current revision
 * `HTTP 409` if the document didn't exist in the cache, storage or with another current revision
 
-### Update
+## Update
 
 Creates a new revision of an existing document.
 
@@ -50,7 +48,7 @@ Header   | Description
 ---------|---------
 If-Match | `{revision}`
 
-#### Returns
+### Returns
 
 If the request succeeded, then `HTTP 202` is returned with tag in the response body.
 
@@ -63,7 +61,7 @@ Errors:
 * `HTTP 304` if the request matches the document's current revision
 * `HTTP 409` if the document didn't exist in the cache, storage or with another current revision
 
-### Delete
+## Delete
 
 Deletes a document
 
@@ -75,7 +73,7 @@ Header   | Description
 ---------|---------
 If-Match | `{revision}`
 
-#### Returns
+### Returns
 
 If the request succeeded, then `HTTP 204` is returned with the  in the response body.
 
