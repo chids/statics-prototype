@@ -21,8 +21,6 @@ import java.util.concurrent.Callable;
 
 import org.junit.Test;
 
-import com.sun.jersey.api.ConflictException;
-
 public class CoordinatorTest {
 
     @Test
@@ -50,12 +48,12 @@ public class CoordinatorTest {
             coordinator.add(version2.update("bloh")); // Attempt to write version 3
             fail("Expected conflict");
         }
-        catch(final ConflictException expeted) {}
+        catch(final RevisionMismatchException expeted) {}
         try {
             coordinator.add(version2.update("bloh")); // Attempt to write version 3, again
             fail("Expected conflict");
         }
-        catch(final ConflictException expected) {}
+        catch(final RevisionMismatchException expected) {}
     }
 
     @Test
@@ -81,7 +79,7 @@ public class CoordinatorTest {
         verify(observer, times(1)).update(coordinator, version2.where());
     }
 
-    @Test(expected = ConflictException.class)
+    @Test(expected = RevisionMismatchException.class)
     public void overwriteWithAdd() throws Exception {
         final Coordinator coordinator = coordinator();
         final Content version1 = new Content("domain", "type", "id", "blah");
@@ -109,7 +107,7 @@ public class CoordinatorTest {
         coordinator.update(revision1, version1.update("version 3"));
     }
 
-    @Test(expected = ConflictException.class)
+    @Test(expected = RevisionMismatchException.class)
     public void inStorageButEvictedFromCache() throws Exception {
         final ObservableCoordinator coordinator = coordinator();
         final Content version1 = new Content("domain", "type", "id", "blah");

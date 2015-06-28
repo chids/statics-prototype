@@ -5,11 +5,10 @@ import static java.util.Objects.requireNonNull;
 import plan3.pure.jersey.exceptions.PreconditionFailedException;
 import plan3.statics.model.Cache;
 import plan3.statics.model.Content;
-import plan3.statics.model.NotModifiedException;
 import plan3.statics.model.Location;
+import plan3.statics.model.NotModifiedException;
+import plan3.statics.model.RevisionMismatchException;
 import plan3.statics.model.Storage;
-
-import com.sun.jersey.api.ConflictException;
 
 public class UpdateCommand extends Command {
 
@@ -39,6 +38,6 @@ public class UpdateCommand extends Command {
         }
         // The cache knows nothing about the previous version
         // => Reject until cache has refreshed
-        throw new ConflictException("Cache out of sync: " + this.candidate);
+        throw new RevisionMismatchException(this.candidate);
     }
 }

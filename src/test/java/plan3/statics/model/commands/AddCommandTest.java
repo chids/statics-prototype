@@ -7,16 +7,16 @@ import static org.mockito.Mockito.when;
 
 import plan3.statics.model.Cache;
 import plan3.statics.model.Content;
-import plan3.statics.model.Revision;
 import plan3.statics.model.Location;
+import plan3.statics.model.Revision;
+import plan3.statics.model.RevisionMismatchException;
+import plan3.statics.model.ServiceUnavailableException;
 import plan3.statics.model.Storage;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-
-import com.sun.jersey.api.ConflictException;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AddCommandTest {
@@ -47,7 +47,7 @@ public class AddCommandTest {
             new AddCommand(this.cache, this.storage, candidate).call();
             fail("Exception expected");
         }
-        catch(final ConflictException expected) {}
+        catch(final RevisionMismatchException expected) {}
     }
 
     @Test
@@ -60,7 +60,7 @@ public class AddCommandTest {
             new AddCommand(this.cache, this.storage, candidate).call();
             fail("Exception expected");
         }
-        catch(final ConflictException expected) {}
+        catch(final RevisionMismatchException expected) {}
         verify(this.cache).remove(candidate);
         verify(this.storage, never()).put(candidate);
     }
@@ -75,7 +75,7 @@ public class AddCommandTest {
             new AddCommand(this.cache, this.storage, candidate).call();
             fail("Exception expected");
         }
-        catch(final ConflictException expected) {}
+        catch(final ServiceUnavailableException expected) {}
         verify(this.cache).put(candidate);
         verify(this.storage, never()).put(candidate);
     }
