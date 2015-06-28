@@ -5,9 +5,8 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import plan3.statics.exceptions.RevisionMismatchException;
-import plan3.statics.exceptions.ServiceUnavailableException;
-
+import plan3.statics.exceptions.DoesntExistException;
+import plan3.statics.exceptions.NotModifiedException;
 import plan3.statics.model.Cache;
 import plan3.statics.model.Content;
 import plan3.statics.model.Location;
@@ -44,11 +43,12 @@ public class AddCommandTest {
         final Content candidate = new Content(new Location("domain", "type", "id", new Revision("foo")), "foo");
         when(this.cache.hasId(candidate)).thenReturn(true);
         when(this.cache.exists(candidate)).thenReturn(true);
+        when(this.storage.exists(candidate)).thenReturn(true);
         try {
             new AddCommand(this.cache, this.storage, candidate).call();
             fail("Exception expected");
         }
-        catch(final RevisionMismatchException expected) {}
+        catch(final NotModifiedException expected) {}
     }
 
     @Test
@@ -61,7 +61,7 @@ public class AddCommandTest {
             new AddCommand(this.cache, this.storage, candidate).call();
             fail("Exception expected");
         }
-        catch(final RevisionMismatchException expected) {}
+        catch(final DoesntExistException expected) {}
         verify(this.cache).remove(candidate);
         verify(this.storage, never()).put(candidate);
     }
@@ -76,7 +76,7 @@ public class AddCommandTest {
             new AddCommand(this.cache, this.storage, candidate).call();
             fail("Exception expected");
         }
-        catch(final ServiceUnavailableException expected) {}
+        catch(final NotModifiedException expected) {}
         verify(this.cache).put(candidate);
         verify(this.storage, never()).put(candidate);
     }
