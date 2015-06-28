@@ -3,6 +3,7 @@ package plan3.statics.exceptions;
 import static javax.ws.rs.core.HttpHeaders.ETAG;
 import static javax.ws.rs.core.HttpHeaders.LOCATION;
 import static javax.ws.rs.core.Response.Status.CONFLICT;
+import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 import static javax.ws.rs.core.Response.Status.NOT_MODIFIED;
 import static javax.ws.rs.core.Response.Status.SERVICE_UNAVAILABLE;
 import static org.junit.Assert.assertEquals;
@@ -28,8 +29,13 @@ public class ExceptionsTest {
     }
 
     @Test
-    public void revisionMismatchException() {
-        assertResponse(CONFLICT, new RevisionMismatchException(entity).getResponse());
+    public void internalConflictException() {
+        assertResponse(CONFLICT, new InternalConflictException(entity).getResponse());
+    }
+
+    @Test
+    public void doesntExistsException() {
+        assertResponse(NOT_FOUND, new DoesntExistException(entity).getResponse());
     }
 
     @Test
