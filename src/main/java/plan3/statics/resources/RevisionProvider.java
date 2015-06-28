@@ -2,7 +2,7 @@ package plan3.statics.resources;
 
 import static javax.ws.rs.core.HttpHeaders.IF_MATCH;
 
-import plan3.pure.jersey.exceptions.BadRequestException;
+import plan3.pure.jersey.exceptions.PreconditionFailedException;
 import plan3.pure.jersey.providers.AbstractInjectableProvider;
 import plan3.statics.model.Revision;
 
@@ -23,7 +23,7 @@ public class RevisionProvider extends AbstractInjectableProvider<Revision> {
     public static Revision from(final HttpRequestContext request) {
         final String etag = request.getHeaderValue(IF_MATCH);
         if(etag == null) {
-            throw new BadRequestException("Must specify " + IF_MATCH);
+            throw new PreconditionFailedException("Must specify " + IF_MATCH);
         }
         return new Revision(HashCode.fromString(etag));
     }
