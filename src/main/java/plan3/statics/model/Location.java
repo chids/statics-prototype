@@ -2,6 +2,7 @@ package plan3.statics.model;
 
 import static java.util.Objects.requireNonNull;
 
+import java.net.URI;
 import java.util.Objects;
 
 import com.google.common.base.Joiner;
@@ -76,5 +77,9 @@ public class Location implements Located {
             throw new IllegalArgumentException(name + " must not be empty");
         }
         return value.trim();
+    }
+
+    public URI toURI() {
+        return URI.create(toString('/'));
     }
 }
