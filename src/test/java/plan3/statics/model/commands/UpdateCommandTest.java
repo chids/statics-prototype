@@ -5,10 +5,8 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import plan3.statics.exceptions.InternalConflictException;
 import plan3.statics.exceptions.NotModifiedException;
-import plan3.statics.exceptions.RevisionMismatchException;
-
-import plan3.pure.jersey.exceptions.PreconditionFailedException;
 import plan3.statics.model.Cache;
 import plan3.statics.model.Content;
 import plan3.statics.model.Location;
@@ -35,6 +33,7 @@ public class UpdateCommandTest {
         when(this.cache.hasId(previous)).thenReturn(true);
         when(this.cache.exists(previous)).thenReturn(true);
         when(this.cache.exists(candidate.where())).thenReturn(false);
+        when(this.storage.exists(previous)).thenReturn(true);
         new UpdateCommand(this.cache, this.storage, previous, candidate).call();
         verify(this.cache).put(candidate);
         verify(this.storage).put(candidate);
@@ -59,11 +58,12 @@ public class UpdateCommandTest {
     public void wrongRevisionInCache() throws Exception {
         final Location previous = new Location("domain", "type", "id", new Revision("bar"));
         when(this.cache.hasId(previous)).thenReturn(true);
+        when(this.cache.get(previous)).thenReturn(previous);
         try {
             new UpdateCommand(this.cache, this.storage, previous, new Content(previous, "bar")).call();
             fail("Exception expected");
         }
-        catch(final PreconditionFailedException expected) {}
+        catch(final InternalConflictException expected) {}
         verify(this.cache, never()).remove(previous);
         verify(this.storage, never()).remove(previous);
     }
@@ -76,7 +76,7 @@ public class UpdateCommandTest {
             new UpdateCommand(this.cache, this.storage, previous, new Content(previous, "bar")).call();
             fail("Exception expected");
         }
-        catch(final RevisionMismatchException expected) {}
+        catch(final InternalConflictException expected) {}
         verify(this.cache, never()).remove(previous);
         verify(this.storage, never()).remove(previous);
     }
