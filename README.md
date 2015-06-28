@@ -1,6 +1,10 @@
 ## Characteristics
 
-Expensive to write due to coordination in order to prevent concurrent conflicting writes. Cheap and reliable to read due to easily replicated and, for those that do not require strict _read your own write_ semantics, latest version eventually available at well known URL.
+* Expensive writes
+   * Due to coordination in order to prevent concurrent conflicting writes
+* Cheap and reliable reads
+   * Due to ease of replication
+   * For those that do not require strict _read your own write_ semantics, the latest version is _eventually_ available at a "_well known_" URL
 
 ## About
 
