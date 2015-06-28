@@ -5,12 +5,13 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import plan3.statics.exceptions.RevisionMismatchException;
+import plan3.statics.exceptions.ServiceUnavailableException;
+
 import plan3.statics.model.Cache;
 import plan3.statics.model.Content;
 import plan3.statics.model.Location;
 import plan3.statics.model.Revision;
-import plan3.statics.model.RevisionMismatchException;
-import plan3.statics.model.ServiceUnavailableException;
 import plan3.statics.model.Storage;
 
 import org.junit.Test;

@@ -2,12 +2,13 @@ package plan3.statics.model.commands;
 
 import static java.util.Objects.requireNonNull;
 
+import plan3.statics.exceptions.NotModifiedException;
+import plan3.statics.exceptions.RevisionMismatchException;
+import plan3.statics.exceptions.ServiceUnavailableException;
+
 import plan3.statics.model.Cache;
 import plan3.statics.model.Content;
 import plan3.statics.model.Location;
-import plan3.statics.model.NotModifiedException;
-import plan3.statics.model.RevisionMismatchException;
-import plan3.statics.model.ServiceUnavailableException;
 import plan3.statics.model.Storage;
 
 public class AddCommand extends Command {
