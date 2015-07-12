@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 public abstract class Lock {
-    private static final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private static final ExecutorService executor = Executors.newSingleThreadExecutor((r) -> new Thread(r, "lock"));
     protected final Timeout timeout;
 
     protected Lock(final Timeout timeout) {
