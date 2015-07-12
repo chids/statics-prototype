@@ -7,8 +7,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-import plan3.pure.jersey.exceptions.PreconditionFailedException;
 import plan3.statics.model.Cache;
+
+import plan3.pure.jersey.exceptions.PreconditionFailedException;
 import plan3.statics.model.Revision;
 import plan3.statics.model.Location;
 import plan3.statics.model.Storage;

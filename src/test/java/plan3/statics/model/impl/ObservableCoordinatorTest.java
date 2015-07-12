@@ -1,4 +1,4 @@
-package plan3.statics.model;
+package plan3.statics.model.impl;
 
 import static javax.ws.rs.core.HttpHeaders.ETAG;
 import static javax.ws.rs.core.HttpHeaders.LOCATION;
@@ -12,6 +12,13 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import plan3.statics.model.Content;
+import plan3.statics.model.Coordinator;
+import plan3.statics.model.Location;
+import plan3.statics.model.Lock;
+
+import plan3.statics.model.impl.ObservableCoordinator;
 import plan3.statics.exceptions.DoesntExistException;
 import plan3.statics.exceptions.InternalConflictException;
 import plan3.statics.mocks.MockCache;
@@ -26,7 +33,7 @@ import javax.ws.rs.core.MultivaluedMap;
 
 import org.junit.Test;
 
-public class CoordinatorTest {
+public class ObservableCoordinatorTest {
 
     @Test
     @SuppressWarnings({ "unchecked" })

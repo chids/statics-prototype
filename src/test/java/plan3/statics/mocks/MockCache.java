@@ -1,6 +1,7 @@
 package plan3.statics.mocks;
 
 import plan3.statics.model.Cache;
+
 import plan3.statics.model.Content;
 import plan3.statics.model.Location;
 import plan3.statics.model.Revision;

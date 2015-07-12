@@ -1,6 +1,12 @@
-package plan3.statics.model;
+package plan3.statics.model.impl;
 
 import static java.util.Objects.requireNonNull;
+
+import plan3.statics.model.Cache;
+
+import plan3.statics.model.Content;
+import plan3.statics.model.Location;
+import plan3.statics.model.Revision;
 import plan3.pure.redis.JedisUtil;
 import redis.clients.jedis.Jedis;
 

@@ -1,4 +1,12 @@
-package plan3.statics.model;
+package plan3.statics.model.impl;
+
+import plan3.statics.model.Cache;
+import plan3.statics.model.Content;
+import plan3.statics.model.Coordinator;
+import plan3.statics.model.Located;
+import plan3.statics.model.Location;
+import plan3.statics.model.Lock;
+import plan3.statics.model.Storage;
 
 import plan3.statics.model.commands.AddCommand;
 import plan3.statics.model.commands.Command;

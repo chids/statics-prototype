@@ -2,8 +2,9 @@ package plan3.statics.model.commands;
 
 import static java.util.Objects.requireNonNull;
 
-import plan3.pure.jersey.exceptions.PreconditionFailedException;
 import plan3.statics.model.Cache;
+
+import plan3.pure.jersey.exceptions.PreconditionFailedException;
 import plan3.statics.model.Location;
 import plan3.statics.model.Storage;
 

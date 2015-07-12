@@ -2,10 +2,11 @@ package plan3.statics.model.commands;
 
 import static java.util.Objects.requireNonNull;
 
+import plan3.statics.model.Cache;
+
 import plan3.statics.exceptions.DoesntExistException;
 import plan3.statics.exceptions.NotModifiedException;
 import plan3.statics.exceptions.InternalConflictException;
-import plan3.statics.model.Cache;
 import plan3.statics.model.Content;
 import plan3.statics.model.Location;
 import plan3.statics.model.Storage;

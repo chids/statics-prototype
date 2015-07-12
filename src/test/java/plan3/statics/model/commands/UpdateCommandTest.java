@@ -5,9 +5,10 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import plan3.statics.model.Cache;
+
 import plan3.statics.exceptions.InternalConflictException;
 import plan3.statics.exceptions.NotModifiedException;
-import plan3.statics.model.Cache;
 import plan3.statics.model.Content;
 import plan3.statics.model.Location;
 import plan3.statics.model.Revision;

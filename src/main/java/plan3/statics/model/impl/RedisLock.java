@@ -1,4 +1,6 @@
-package plan3.statics.model;
+package plan3.statics.model.impl;
+
+import plan3.statics.model.Lock;
 
 import plan3.pure.redis.JedisUtil;
 import plan3.pure.util.Timeout;
