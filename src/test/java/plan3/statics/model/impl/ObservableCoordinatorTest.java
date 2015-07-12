@@ -9,7 +9,6 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -23,6 +22,9 @@ import plan3.statics.model.Coordinator;
 import plan3.statics.model.Location;
 import plan3.statics.model.Lock;
 import plan3.statics.model.commands.AddCommand;
+import plan3.statics.model.impl.Event.Added;
+import plan3.statics.model.impl.Event.Deleted;
+import plan3.statics.model.impl.Event.Updated;
 
 import java.util.Observer;
 import java.util.concurrent.Callable;
@@ -173,16 +175,17 @@ public class ObservableCoordinatorTest {
     }
 
     @Test
-    public void observerEvents() throws Exception {
+    public void observerEvents() throws Exception   {
         final Observer observer = mock(Observer.class);
         final ObservableCoordinator coordinator = coordinator(observer);
         final Content version1 = new Content("domain", "type", "id", "blah");
         final Location revision1 = coordinator.add(version1);
-        verify(observer).update(coordinator, version1.where()); // Add
+        verify(observer).update(eq(coordinator), isA(Added.class));
         final Content version2 = version1.update("version 2");
         coordinator.update(revision1, version2);
+        verify(observer).update(eq(coordinator), isA(Updated.class));
         coordinator.delete(version2.where());
-        verify(observer, times(2)).update(coordinator, version2.where());
+        verify(observer).update(eq(coordinator), isA(Deleted.class));
     }
 
     private static ObservableCoordinator coordinator(final Observer observer) {
