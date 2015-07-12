@@ -47,7 +47,7 @@ public class Location implements Located {
         return Joiner.on(separator).skipNulls().join(this.domain, this.type, this.id, this.revision.toString());
     }
 
-    String toStringWithoutRevision(final char separator) {
+    public String toStringWithoutRevision(final char separator) {
         return Joiner.on(Character.toString(separator)).skipNulls().join(this.domain, this.type, this.id);
     }
 

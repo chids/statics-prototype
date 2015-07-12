@@ -4,7 +4,6 @@ import static java.util.Objects.requireNonNull;
 
 import plan3.pure.util.Timeout;
 
-import java.util.ConcurrentModificationException;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -38,17 +37,7 @@ public abstract class Lock {
         }
     }
 
-    Token acquire(final Location path) {
-        final String key = "lock:".concat(path.toStringWithoutRevision(':'));
-        if(lock(key)) {
-            return () -> unlock(key);
-        }
-        throw new ConcurrentModificationException("Lock already acquired");
-    }
-
-    protected abstract boolean lock(String key);
-
-    protected abstract void unlock(String key);
+    public abstract Token acquire(Location key);
 
     public interface Token extends AutoCloseable {
         @Override

@@ -1,12 +1,13 @@
 package plan3.statics.model.impl;
 
-import plan3.statics.model.Lock;
-
 import plan3.pure.redis.JedisUtil;
 import plan3.pure.util.Timeout;
+import plan3.statics.model.Location;
+import plan3.statics.model.Lock;
 import redis.clients.jedis.Jedis;
 
 import java.time.Clock;
+import java.util.ConcurrentModificationException;
 import java.util.concurrent.TimeUnit;
 
 public class RedisLock extends Lock {
@@ -21,18 +22,18 @@ public class RedisLock extends Lock {
     }
 
     @Override
-    public boolean lock(final String key) {
+    public Token acquire(final Location path) {
+        final String key = "lock:".concat(path.toStringWithoutRevision(':'));
         try(Jedis nonTx = this.jedis.nonTx()) {
             if(1 == nonTx.setnx(key, this.clock.instant().toString())) {
                 nonTx.expire(key, (int)super.timeout.to(TimeUnit.SECONDS));
-                return true;
+                return () -> unlock(key);
             }
         }
-        return false;
+        throw new ConcurrentModificationException("Lock already acquired");
     }
 
-    @Override
-    public void unlock(final String key) {
+    private void unlock(final String key) {
         try(Jedis nonTx = this.jedis.nonTx()) {
             nonTx.del(key);
         }

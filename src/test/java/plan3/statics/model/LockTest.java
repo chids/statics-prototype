@@ -3,9 +3,6 @@ package plan3.statics.model;
 import static org.fest.assertions.api.Assertions.fail;
 
 import plan3.statics.mocks.MockLock;
-
-import plan3.statics.model.Content;
-import plan3.statics.model.Lock;
 import plan3.statics.model.Lock.Token;
 
 import java.util.ConcurrentModificationException;
