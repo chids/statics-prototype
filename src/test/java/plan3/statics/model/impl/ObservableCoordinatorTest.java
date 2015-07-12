@@ -13,17 +13,15 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import plan3.statics.model.Content;
-import plan3.statics.model.Coordinator;
-import plan3.statics.model.Location;
-import plan3.statics.model.Lock;
-
-import plan3.statics.model.impl.ObservableCoordinator;
 import plan3.statics.exceptions.DoesntExistException;
 import plan3.statics.exceptions.InternalConflictException;
 import plan3.statics.mocks.MockCache;
 import plan3.statics.mocks.MockLock;
 import plan3.statics.mocks.MockStorage;
+import plan3.statics.model.Content;
+import plan3.statics.model.Coordinator;
+import plan3.statics.model.Location;
+import plan3.statics.model.Lock;
 import plan3.statics.model.commands.AddCommand;
 
 import java.util.Observer;
@@ -78,34 +76,30 @@ public class ObservableCoordinatorTest {
 
     @Test
     public void add() throws Exception {
-        final Observer observer = mock(Observer.class);
-        final ObservableCoordinator coordinator = coordinator(observer);
+        final ObservableCoordinator coordinator = coordinator();
         final Content version1 = new Content("domain", "type", "id", "blah");
         coordinator.add(version1);
         assertEquals(version1, coordinator.storage.get(version1.where()));
-        verify(observer).update(coordinator, version1.where());
     }
 
     @Test
     public void update() throws Exception {
-        final Observer observer = mock(Observer.class);
-        final ObservableCoordinator coordinator = coordinator(observer);
+        final ObservableCoordinator coordinator = coordinator();
         final Content version1 = new Content("domain", "type", "id", "blah");
         final Location revision1 = coordinator.add(version1);
         final Content version2 = version1.update("foo");
         coordinator.update(revision1, version2);
         assertEquals(coordinator.storage.get(version2.where()), version2);
-        verify(observer, times(1)).update(coordinator, version1.where());
-        verify(observer, times(1)).update(coordinator, version2.where());
     }
 
     @Test
     public void overwriteWithAdd() throws Exception {
-        final Coordinator coordinator = coordinator();
+        final ObservableCoordinator coordinator = coordinator();
         final Content version1 = new Content("domain", "type", "id", "blah");
         coordinator.add(version1);
+        final Content version2 = version1.update("bleh");
         try {
-            coordinator.add(version1.update("bleh"));
+            coordinator.add(version2);
         }
         catch(final InternalConflictException expected) {
             final MultivaluedMap<String, Object> headers = expected.getResponse().getMetadata();
@@ -138,7 +132,8 @@ public class ObservableCoordinatorTest {
         final Location revision1 = coordinator.add(version1);
         final Content version2 = version1.update("foo");
         coordinator.storage.put(version2); // Write version 2 to storage only
-        coordinator.update(revision1, version1.update("version 3"));
+        final Content version3 = version1.update("version 3");
+        coordinator.update(revision1, version3);
     }
 
     @Test
@@ -147,8 +142,9 @@ public class ObservableCoordinatorTest {
         final Content version1 = new Content("domain", "type", "id", "blah");
         final Location revision1 = coordinator.add(version1);
         coordinator.cache.remove(version1.where()); // Remove from cache only
+        final Content version2 = version1.update("version 2");
         try {
-            coordinator.update(revision1, version1.update("version 2"));
+            coordinator.update(revision1, version2);
             fail("Exception expected");
         }
         catch(final InternalConflictException expected) {
@@ -160,8 +156,7 @@ public class ObservableCoordinatorTest {
 
     @Test
     public void inCacheButRemovedFromStorageRejects() throws Exception {
-        final Observer observer = mock(Observer.class);
-        final ObservableCoordinator coordinator = coordinator(observer);
+        final ObservableCoordinator coordinator = coordinator();
         final Content version1 = new Content("domain", "type", "id", "blah");
         final Location revision1 = coordinator.add(version1);
         coordinator.storage.remove(version1.where()); // Remove from storage only
@@ -169,13 +164,25 @@ public class ObservableCoordinatorTest {
         try {
             coordinator.update(revision1, version2);
         }
-        catch(DoesntExistException expected) {
+        catch(final DoesntExistException expected) {
             final MultivaluedMap<String, Object> headers = expected.getResponse().getMetadata();
             assertEquals(version1.where().revision(), headers.getFirst(ETAG));
             assertEquals(version1.where().toString('/'), headers.getFirst(LOCATION).toString());
         }
         assertNull(coordinator.storage.get(version2.where()));
-        verify(observer, times(1)).update(coordinator, version1.where());
+    }
+
+    @Test
+    public void observerEvents() throws Exception {
+        final Observer observer = mock(Observer.class);
+        final ObservableCoordinator coordinator = coordinator(observer);
+        final Content version1 = new Content("domain", "type", "id", "blah");
+        final Location revision1 = coordinator.add(version1);
+        verify(observer).update(coordinator, version1.where()); // Add
+        final Content version2 = version1.update("version 2");
+        coordinator.update(revision1, version2);
+        coordinator.delete(version2.where());
+        verify(observer, times(2)).update(coordinator, version2.where());
     }
 
     private static ObservableCoordinator coordinator(final Observer observer) {
@@ -183,6 +190,6 @@ public class ObservableCoordinatorTest {
     }
 
     private static ObservableCoordinator coordinator() {
-        return new ObservableCoordinator(new MockCache(), new MockStorage(), new MockLock());
+        return coordinator(mock(Observer.class));
     }
 }
