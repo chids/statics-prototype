@@ -8,7 +8,7 @@
 
 ## About
 
-Statics is Heroku friendly "port" of [Pinterest's Config v2](http://engineering.pinterest.com/post/112895488589/serving-configuration-data-at-scale-with-high)
+Statics is Heroku friendly "port" of [Pinterest's Config v2](https://medium.com/@Pinterest_Engineering/serving-configuration-data-at-scale-with-high-availability-8612521c1108)
 and as such it is a service for read intensive rather than write intensive workloads.
 
 ### Differences from Pinterest's Config v2
