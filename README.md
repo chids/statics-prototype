@@ -1,3 +1,5 @@
+_This work was done 2015 but put here, in the open, 2018._
+
 ## Characteristics
 
 * Expensive writes
